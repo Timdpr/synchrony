@@ -1,8 +1,8 @@
 ### Source files for "Cortical Spike Synchrony as a Measure of Input Familiarity"
 
-http://www.mitpressjournals.org/doi/abs/10.1162/neco_a_00987
-
 https://arxiv.org/abs/1709.03113
+
+http://www.mitpressjournals.org/doi/abs/10.1162/neco_a_00987
 
 ## Overview
 
