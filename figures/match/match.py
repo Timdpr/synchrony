@@ -54,7 +54,7 @@ for par in pars:
 
 
     # set up experiments
-    seeds = lab.standard_seeds[0:50]
+    seeds = lab.standard_seeds[0:10]
 
 
     scattervalues = [0,5,10]
