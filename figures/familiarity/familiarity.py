@@ -35,7 +35,7 @@ conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
 bins = np.arange(0.2,1.1,0.1) # edges of the desired similarity bins
-n_samples = 100 # repetitions of the whole sampling procedure (networks & patterns)
+n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -172,14 +172,14 @@ def plot_setups(experiments,save=True):
             savefig(ex.name+'.pdf', bbox_inches='tight')
 
 # plot one example from each similarity category
-picture_seed = 79
+picture_seed = 3
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
 
 
 figure(figsize=(3,3))
-plo.plotsetup(experiments_binned[0][79].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
+plo.plotsetup(experiments_binned[0][3].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
 savefig('network.pdf', bbox_inches='tight')
 
