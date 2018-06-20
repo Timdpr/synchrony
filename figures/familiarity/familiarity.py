@@ -22,8 +22,8 @@ close('all')
 
 downsample=100
 
-M=15 # network size
-N=15 # '' ''
+M=5 # network size
+N=90 # '' ''
 num_patterns_initial= 2000 # initial size of pattern pool from which to sample - increases itself as needed:
 patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns
