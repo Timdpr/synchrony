@@ -18,13 +18,14 @@ import hcNetworks as net
 import hcPlotting as plo
 import hcUtil as ut
 from numpy.random import RandomState
+import getPatterns
 close('all')
 
 downsample=100
 
 M=5 # network size
 N=90 # '' ''
-num_patterns_initial= 2000 # initial size of pattern pool from which to sample - increases itself as needed:
+num_patterns_initial= 274 # initial size of pattern pool from which to sample - increases itself as needed:
 patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns
 pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
@@ -34,7 +35,7 @@ conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated 
 conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
-bins = np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
+bins = [0.7, 0.8, 0.9, 1] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
 n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
@@ -42,35 +43,40 @@ def setup(seed,seednr,num_patterns):
     print "sampling network",seednr,"with a pool of",num_patterns,"patterns"
     rng = RandomState(seed)
 
+    patterns = getPatterns.getPatternsInDirectory(
+                '/mnt/hgfs/Masters/Project/synchrony/images/all_views/', M, N)
+
     # generate patterns by choosing a point on the network and activating a random choice of cells near it
-    patterns = np.zeros((M,N,num_patterns))
-    for pat in range(num_patterns):
-        margin = 2
-        center = rng.randint(margin,M-margin),rng.randint(margin,N-margin)
-        for i in range(M):
-            for j in range(N):
-                p_on = max(1.0/(pattern_b*np.sqrt((center[0]-i)**2 + (center[1]-j)**2))-pattern_c,0) if (i,j)!=center else 1
-                #patterns[i,j,pat] = p_on
-                if rng.rand() < p_on:
-                   patterns[i,j,pat] = 1
+#    patterns = np.zeros((M,N,num_patterns))
+#    for pat in range(num_patterns):
+#        margin = 2
+#        center = rng.randint(margin,M-margin),rng.randint(margin,N-margin)
+#        for i in range(M):
+#            for j in range(N):
+#                p_on = max(1.0/(pattern_b*np.sqrt((center[0]-i)**2 + (center[1]-j)**2))-pattern_c,0) if (i,j)!=center else 1
+#                #patterns[i,j,pat] = p_on
+#                if rng.rand() < p_on:
+#                   patterns[i,j,pat] = 1
         ## visualize patterns:
         # clf()
         # imshow(patterns[:,:,pat]);colorbar()
         # import pdb;pdb.set_trace()
-    rng = RandomState(seed) # reinitialize rng so the sampled network is not dependent on the nr of previously sampled patterns
+#    rng = RandomState(seed) # reinitialize rng so the sampled network is not dependent on the nr of previously sampled patterns
 
     # generate the network:
     # random network with distance-dependent connection probability,
     # with stronger links between cells that participate in the first num_imprinted patterns.
     network = net.grid_empty(M,N)
     nodes = network.nodes()
+    route_patterns = getPatterns.getPatternsInDirectory(
+                '/mnt/hgfs/Masters/Project/synchrony/images/route/', M, N)
     for i,u in enumerate(nodes):
         for v in nodes[i+1:]:
             # if both nodes participate in the same pattern, make a strong link,
             # with some probability depending on distance
             in_pattern=False
             for pat in range(num_imprinted):
-                if patterns[u[0],u[1],pat] and patterns[v[0],v[1],pat]:
+                if route_patterns[u[0],u[1],pat] and route_patterns[v[0],v[1],pat]:
                     in_pattern = True
                     break
 
@@ -176,7 +182,6 @@ picture_seed = 3
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
-
 
 figure(figsize=(3,3))
 plo.plotsetup(experiments_binned[0][3].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
