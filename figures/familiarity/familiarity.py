@@ -35,18 +35,19 @@ conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated 
 conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
-bins = [0.7, 0.8, 0.9, 1] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
+bins = [0.6, 0.7, 0.8, 0.9, 1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
+n_samples = 25 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
     print "sampling network",seednr,"with a pool of",num_patterns,"patterns"
-    rng = RandomState(seed)
 
+    # Instead of generating patterns, get patterns from 'all_views' folder ## tp275 ##
     patterns = getPatterns.getPatternsInDirectory(
                 '/mnt/hgfs/Masters/Project/synchrony/images/all_views/', M, N)
-
+    
     # generate patterns by choosing a point on the network and activating a random choice of cells near it
+    rng = RandomState(seed)
 #    patterns = np.zeros((M,N,num_patterns))
 #    for pat in range(num_patterns):
 #        margin = 2
@@ -57,10 +58,10 @@ def setup(seed,seednr,num_patterns):
 #                #patterns[i,j,pat] = p_on
 #                if rng.rand() < p_on:
 #                   patterns[i,j,pat] = 1
-        ## visualize patterns:
-        # clf()
-        # imshow(patterns[:,:,pat]);colorbar()
-        # import pdb;pdb.set_trace()
+#        ## visualize patterns:
+#        # clf()
+#        # imshow(patterns[:,:,pat]);colorbar()
+#        # import pdb;pdb.set_trace()
 #    rng = RandomState(seed) # reinitialize rng so the sampled network is not dependent on the nr of previously sampled patterns
 
     # generate the network:
@@ -99,9 +100,10 @@ def setup(seed,seednr,num_patterns):
                                                       ])
         # calculate this pattern's similarity to imprinted patterns
         # (the fraction of its cells it shares with an imprinted pattern)
-        overlaps = [np.sum(current*patterns[:,:,j])/float(np.sum(current)) for j in range(num_imprinted)]
+        # Change: 'patterns' has been changed to 'route_patterns' where appropriate ## tp275 ##
+        overlaps = [np.sum(current*route_patterns[:,:,j])/float(np.sum(current)) for j in range(num_imprinted)]
         nr_active = np.sum(current) # nr of active cells in the pattern (for normalization)
-        all_imprinted = np.sum(patterns[:,:,0:num_imprinted],axis=2)
+        all_imprinted = np.sum(route_patterns[:,:,0:num_imprinted],axis=2)
         all_imprinted[all_imprinted>1] = 1
         similarity = np.sum(current*all_imprinted)/float(nr_active)
 
@@ -113,7 +115,7 @@ def setup(seed,seednr,num_patterns):
         # import ipdb; ipdb.set_trace()
 
         ex.similarity = similarity
-        ex.similar_to = zip(overlaps,[patterns[:,:,j].copy() for j in range(num_imprinted)])
+        ex.similar_to = zip(overlaps,[route_patterns[:,:,j].copy() for j in range(num_imprinted)])
         similarities_this_net.append(similarity)
         # if i<num_imprinted:
         #     ex.name+="_imprinted"
@@ -178,12 +180,13 @@ def plot_setups(experiments,save=True):
             savefig(ex.name+'.pdf', bbox_inches='tight')
 
 # plot one example from each similarity category
-picture_seed = 3
+picture_seed = 3  # small seed for running small # of repetitions ## tp275 ##
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
 
 figure(figsize=(3,3))
+# Change [0][x] here to match seed: ## tp275 ##
 plo.plotsetup(experiments_binned[0][3].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
 savefig('network.pdf', bbox_inches='tight')
@@ -212,6 +215,7 @@ figure(figsize=(3,3))
 doboxplot(rsyncs,[0]+bins)
 ylabel("Rsync")
 ylim(0,1)
+xlim(0.6, 5.5)
 xlabel("Similarity")
 savefig('rsync.pdf', bbox_inches='tight')
 
