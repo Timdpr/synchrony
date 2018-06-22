@@ -1,3 +1,9 @@
+## Using neural synchrony as a measure of scene familiarity in visually guided ant route navigation
+
+Originally a fork of [cknd/synchrony](https://github.com/cknd/synchrony), the project has been modified to use ant-like binarised images of an indoor environment captured using a gantry robot.
+
+The original readme can be seen below:
+
 ### Source files for "Cortical Spike Synchrony as a Measure of Input Familiarity"
 
 https://arxiv.org/abs/1709.03113
