@@ -23,9 +23,9 @@ close('all')
 
 downsample=100
 
-M=5 # network size
+M=7 # network size
 N=90 # '' ''
-num_patterns_initial= 274 # initial size of pattern pool from which to sample - increases itself as needed:
+num_patterns_initial= 1370 # initial size of pattern pool from which to sample - increases itself as needed:
 patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns
 pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
@@ -35,8 +35,8 @@ conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated 
 conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
-bins = [0.6, 0.7, 0.8, 0.9, 1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 25 # repetitions of the whole sampling procedure (networks & patterns)
+bins = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
+n_samples = 50 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -44,7 +44,7 @@ def setup(seed,seednr,num_patterns):
 
     # Instead of generating patterns, get patterns from 'all_views' folder ## tp275 ##
     patterns = getPatterns.getPatternsInDirectory(
-                '/mnt/hgfs/Masters/Project/synchrony/images/all_views/', M, N)
+                '/mnt/hgfs/Masters/Project/synchrony/images/all_views_rotated_90x7/', M, N)
     
     # generate patterns by choosing a point on the network and activating a random choice of cells near it
     rng = RandomState(seed)
@@ -70,7 +70,7 @@ def setup(seed,seednr,num_patterns):
     network = net.grid_empty(M,N)
     nodes = network.nodes()
     route_patterns = getPatterns.getPatternsInDirectory(
-                '/mnt/hgfs/Masters/Project/synchrony/images/route/', M, N)
+                '/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/', M, N)
     for i,u in enumerate(nodes):
         for v in nodes[i+1:]:
             # if both nodes participate in the same pattern, make a strong link,
@@ -173,21 +173,20 @@ def doboxplot(data,xticklabels, do_scatter=False):
 
 def plot_setups(experiments,save=True):
     for i,ex in enumerate(experiments):
-        figure(figsize=(3,3))
+        figure(figsize=(25,2))
         plo.eplotsetup(ex,'rsync')
         title("similarity "+str(ex.similarity))
         if save:
             savefig(ex.name+'.pdf', bbox_inches='tight')
 
 # plot one example from each similarity category
-picture_seed = 3  # small seed for running small # of repetitions ## tp275 ##
+picture_seed = 5  # small seed for when running small # of repetitions ## tp275 ##
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
 
-figure(figsize=(3,3))
-# Change [0][x] here to match seed: ## tp275 ##
-plo.plotsetup(experiments_binned[0][3].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
+figure(figsize=(25,2))
+plo.plotsetup(experiments_binned[0][picture_seed].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
 savefig('network.pdf', bbox_inches='tight')
 
@@ -206,38 +205,36 @@ for i,column in enumerate(experiments_binned):
 print "nr of samples per bin:", [len(s) for s in rsyncs]
 
 # plot them
-# figure(figsize=(5,4))
-# doboxplot(spikecounts_,[0]+bins.tolist())
-# ylabel("spikecount")
-# savefig('spikecount.pdf', bbox_inches='tight')
+#figure(figsize=(5,4))
+#doboxplot(spikecounts_,[0]+bins.tolist())
+#ylabel("spikecount")
+#savefig('spikecount.pdf', bbox_inches='tight')
 
-figure(figsize=(3,3))
+figure(figsize=(4,4))
 doboxplot(rsyncs,[0]+bins)
 ylabel("Rsync")
 ylim(0,1)
-xlim(0.6, 5.5)
+xlim(0.4, 6.5)
 xlabel("Similarity")
 savefig('rsync.pdf', bbox_inches='tight')
 
 
 
-figure(figsize=(3,3))
+figure(figsize=(4,3))
 title('connectivity of inout-receiving cells')
 doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bins)
 ylabel("# connections / # input-receiving")
 ylim(ymin=-0.1)
+xlim(0.4, 6.5)
 xlabel("Similarity index")
 savefig('network_sampling_variability.pdf', bbox_inches='tight')
 
 
 
-
-figure()
+figure(figsize=(25,2))
 lowest_sync_highest_similarity = experiments_binned[-2][np.argmin([exp.getresults('rsync') for exp in experiments_binned[-2]])]
 plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
 title('example of a situation with low sync despite high similarity index')
 savefig('setup__low_sync_high_similarity.pdf', bbox_inches='tight')
-
-
 
 print('\a')
