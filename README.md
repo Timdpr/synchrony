@@ -1,6 +1,6 @@
-### Using neural synchrony as a measure of scene familiarity in visually guided ant route navigation
+## Using neural synchrony as a measure of scene familiarity in visually guided ant route navigation
 
-#### Originally a fork of [cknd/synchrony](https://github.com/cknd/synchrony), the project has been modified to use ant-like binarised images of an indoor environment captured using a gantry robot.
+Originally a fork of [cknd/synchrony](https://github.com/cknd/synchrony), the project has been modified to use ant-like binarised images of an indoor environment captured using a gantry robot.
 
 The original readme can be seen below:
 
