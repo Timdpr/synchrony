@@ -26,7 +26,7 @@ downsample=100
 M=7 # network size
 N=90 # '' ''
 num_patterns_initial= 1370 # initial size of pattern pool from which to sample - increases itself as needed:
-patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
+patterns_per_bin = 5       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns
 pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
 pattern_c=0.2 # pattern size: activation probability cutoff with distance
@@ -36,7 +36,7 @@ conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
 bins = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 50 # repetitions of the whole sampling procedure (networks & patterns)
+n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -179,16 +179,19 @@ def plot_setups(experiments,save=True):
         if save:
             savefig(ex.name+'.pdf', bbox_inches='tight')
 
+			
 # plot one example from each similarity category
-picture_seed = 5  # small seed for when running small # of repetitions ## tp275 ##
+picture_seed = 0  # small seed for when running small # of repetitions ## tp275 ##
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
+
 
 figure(figsize=(25,2))
 plo.plotsetup(experiments_binned[0][picture_seed].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
 savefig('network.pdf', bbox_inches='tight')
+
 
 # fetch synchrony measurements from trials where there was at least 1 spike
 # (this triggers the simulation to be run)
@@ -204,11 +207,13 @@ for i,column in enumerate(experiments_binned):
 
 print "nr of samples per bin:", [len(s) for s in rsyncs]
 
+
 # plot them
 #figure(figsize=(5,4))
 #doboxplot(spikecounts_,[0]+bins.tolist())
 #ylabel("spikecount")
 #savefig('spikecount.pdf', bbox_inches='tight')
+
 
 figure(figsize=(4,4))
 doboxplot(rsyncs,[0]+bins)
@@ -219,7 +224,6 @@ xlabel("Similarity")
 savefig('rsync.pdf', bbox_inches='tight')
 
 
-
 figure(figsize=(4,3))
 title('connectivity of inout-receiving cells')
 doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bins)
@@ -228,7 +232,6 @@ ylim(ymin=-0.1)
 xlim(0.4, 6.5)
 xlabel("Similarity index")
 savefig('network_sampling_variability.pdf', bbox_inches='tight')
-
 
 
 figure(figsize=(25,2))
