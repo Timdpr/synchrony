@@ -448,7 +448,7 @@ def compare(experiments,measurename=None,grid_as="image",plot_as="scatter,boxplo
     return fig
 
 
-def plotsetup(network,inputstrength,is_measured,axes=None,grid_as="image",subgraph=False, nodesize=0.03, edgecolor_offset=0):
+def plotsetup(network,inputstrength,is_measured,axes=None,grid_as="image",subgraph=False, nodesize=0.2, edgecolor_offset=0):
     """
     Draws the network graph, with color markers for the input-receiving and the
     measured population.
