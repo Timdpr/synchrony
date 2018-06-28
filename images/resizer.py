@@ -8,19 +8,19 @@ downsize simulated ant views.
 import os
 from PIL import Image
 
-path = ('C:/Users/s/Documents/Masters/Project/images/REPLACE AS NEEDED/')
-dirs = os.listdir( path )
+path = ('C:/Users/s/Documents/Masters/Project/images/binarised_rotated/')
+dirs = os.listdir(path)
 
 def crop_resize():
     for item in dirs:
         if os.path.isfile(path+item):
             im = Image.open(path+item)
 			
-            w, h = im.size
-            im = im.crop((0, 9, w, h-9))
+#            w, h = im.size
+#            im = im.crop((0, 9, w, h-9))
 			
             f, e = os.path.splitext(path+item)
-            imResize = im.resize((90,5), Image.ANTIALIAS)
+            imResize = im.resize((90,7), Image.ANTIALIAS)
             imResize.save(f + '.png', 'PNG')
 
 crop_resize()
