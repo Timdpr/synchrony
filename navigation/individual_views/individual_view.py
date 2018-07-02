@@ -37,7 +37,7 @@ conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
 bins = [1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 2 # repetitions of the whole sampling procedure (networks & patterns)
+n_samples = 1 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
