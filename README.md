@@ -4,11 +4,15 @@ Originally a fork of [cknd/synchrony](https://github.com/cknd/synchrony), the pr
 
 The original readme can be seen below:
 
-### Source files for "Cortical Spike Synchrony as a Measure of Input Familiarity"
+### Source code for "Cortical Spike Synchrony as a Measure of Input Familiarity"
+###### Korndörfer, C., Ullner, E., García-Ojalvo, J., & Pipa, G. (2017). Cortical Spike Synchrony as a Measure of Input Familiarity. Neural computation, 29(9), 2491-2510.
+**tl;dr:** Sometimes a patch of cortex responds to an input in unison, sometimes each neuron has its own rhythm. Why is that, and what is it for? Maybe temporal order is just something that happens when random inputs hit a group of well-connected excitatory cells, because they nudge each other and have a resonant frequency. So then, maybe these orderly responses can signal that the same cells have been hit together often before, since that's where strong, excitatory connections come from in the first place.
 
-https://arxiv.org/abs/1709.03113
+https://arxiv.org/abs/1709.03113  (open access)
 
-http://www.mitpressjournals.org/doi/abs/10.1162/neco_a_00987
+http://www.mitpressjournals.org/doi/abs/10.1162/neco_a_00987  (paywall)
+
+![animation of a grid network resonating under random input](https://raw.githubusercontent.com/cknd/synchrony/master/gnet_5.gif)
 
 ## Overview
 
@@ -19,7 +23,7 @@ These sources can be divided in three subsets:
 - a number of python scripts that generate the figure panels shown in the article along with some additional plots.
 
 A note on code quality:
-I'm making this public because scientific code should be public, even (or especially) if its creator is not entirely proud of it. This is not a piece of software: It's a collection of experiments that had to survive many shifts in scope as ideas progressed. Part of the codebase started out back when using python 2 looked like a good idea. Having said this, I also want to say: Fear not! The main pathways are quite well-aired and documented and everything makes colorful plots.
+I'm making this public because scientific code should be out there, even (or especially) if its creator is not entirely proud of it. This is not a piece of software, just a pile of experiments (a surprisingly old one, as well: python 2 seemed like a reasonable choice back then). Having said this: Fear not! The main pathways are quite well-aired & documented and everything makes colorful plots.
 
 
 ## Dependencies
