@@ -1,196 +1,147 @@
 """
-Samples random spatial networks with strong links clustered in certain random input patterns.
-Then, tests synchrony for input patterns that more or less resemble these imprinted patterns.
+Outputs a synchrony measure for a single view
 
-This script takes a long time to run.
-
-Script initially created by cknd, modified for route navigation etc. by tp275
+@author tp275
 """
 
-
 import numpy as np
-from matplotlib.pyplot import *
 import os,sys
 hc_path = "../../libHC"
 sys.path.append(os.path.realpath(hc_path))
-import networkx as nx
 import hcLab as lab
 import hcNetworks as net
-import hcPlotting as plo
-import hcUtil as ut
 from numpy.random import RandomState
 import getPatterns
-close('all')
 
-downsample=100
 
-M=7 # network size
-N=90 # '' ''
-num_patterns_initial= 1 # initial size of pattern pool from which to sample - increases itself as needed:
-patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
-num_imprinted=10 # nr of high prior patterns, i.e. number of route images
-pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
-pattern_c=0.2 # pattern size: activation probability cutoff with distance
-conn_b_bck=1 # network connectivity dropoff rate with distance from other cell, for non-coactivated (background) cell pairs
-conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated (background) cell pairs
-conn_b=1 # dropoff rate for co-activated cells
-conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
-
-bins = [1.0] #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 1 # repetitions of the whole sampling procedure (networks & patterns)
-
-experiments = []
-def setup(seed,seednr,num_patterns):
-    print "sampling network",seednr,"with a pool of",num_patterns,"patterns"
-
-    # Instead of generating patterns, get patterns from 'all_views' folder
-    # Also get route patterns for imprinting
-    patterns = getPatterns.getPatternsInDirectory(
-                '/mnt/hgfs/Masters/Project/synchrony/images/individual_view/', M, N)
-    route_patterns = getPatterns.getPatternsInDirectory(
-                '/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/', M, N)
+class IndividualSynchrony:
+    def __init__(self, network_dimensions, num_samples,
+                 pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3, conn_b=1, conn_c=0.15, downsample=100,
+                 pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
+                 route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/'):
+        """
+        network_dimensions: [M, N], the network size
+        num_imprinted: nr of high prior patterns, i.e. number of route images
+        num_samples: repetitions of the whole sampling procedure (networks & patterns)
+        
+        pattern_b: pattern size: activation probability dropoff rate with distance from pattern center
+        pattern_c: pattern size: activation probability cutoff with distance
+        conn_b_bck: network connectivity dropoff rate with distance from other cell, for non-coactivated (background) cell pairs
+        conn_c_bck: network connectivity cutoff with distance, for non-coactivated (background) cell pairs
+        conn_b: dropoff rate for co-activated cells
+        conn_c: relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but
+                connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
+        """
+        self.M = network_dimensions[0]
+        self.N = network_dimensions[1]
+        self.num_samples = num_samples
+        self.pattern_b = pattern_b
+        self.pattern_c = pattern_c
+        self.conn_b_bck = conn_b_bck
+        self.conn_c_bck = conn_c_bck
+        self.conn_b = conn_b
+        self.conn_c = conn_c
+        self.downsample = downsample
+        self.patterns = getPatterns.getPatternsInDirectory(pattern_dir, self.M, self.N)
+        self.route_patterns = getPatterns.getPatternsInDirectory(route_pattern_dir, self.M, self.N)
+        self.num_imprinted = len(self.route_patterns[0][0])
+        
+        self.network = None
+        self.experiments = []
+        self.similarities = []
+        self.results = []
     
     
-    # Generate the network using route images, with distance-dependent connection probability
-    # and stronger links between cells that participate in the route patterns
-    rng = RandomState(seed)
-    network = net.grid_empty(M,N)
-    nodes = network.nodes()
-    for i,u in enumerate(nodes):
-        for v in nodes[i+1:]:
+    def setup_network(self, rng):
+        """
+        """
+        print("Creating network from " + str(self.num_imprinted) + " route images")
+        self.network = None
+        # Generate the network using route images, with distance-dependent connection probability
+        # and stronger links between cells that participate in the route patterns
+        self.network = net.grid_empty(self.M, self.N)
+        nodes = self.network.nodes()
+        for i,u in enumerate(nodes):
+            for v in nodes[i+1:]:
+                # Check if both nodes participate in the same pattern
+                in_pattern=False 
+                for pat in range(self.num_imprinted):
+                    if self.route_patterns[u[0],u[1],pat] and self.route_patterns[v[0],v[1],pat]:
+                        in_pattern = True
+                        break
+                # if so, make a strong link with some probability depending on distance
+                p_connect_pattern    = max(1.0/(self.conn_b*np.sqrt((u[0]-v[0])**2 + (u[1]-v[1])**2))-self.conn_c,0)
+                p_connect_background = max(1.0/(self.conn_b_bck*np.sqrt((u[0]-v[0])**2 + (u[1]-v[1])**2))-self.conn_c_bck,0)
+                if in_pattern and rng.rand()<p_connect_pattern:
+                    self.network.add_edge(u,v,{"strength":15})
+                # fewer and weaker background connections are created where there was no common input.
+                elif rng.rand()<p_connect_background:
+                    self.network.add_edge(u,v,{"strength":1})
+        print("Done")
+                    
+    def setup_experiments(self, rng):
+        """
+        Creates a setup (experiment object) for each pattern to be presented to the network
+        """
+        self.experiments = []
+        self.similarities = []
+        for i in range(len(self.patterns[0][0])): # for each image in pattern folder
+            current = self.patterns[:,:,i]
+            ex = lab.experiment(self.network, [rng.randint(1,10000)],
+                                inputc=current, name="pattern "+str(i),
+                                downsample=self.downsample, verbose=True, con_upstr_exc=2,
+                                measures=[lab.spikey_rsync(roi=current, name="rsync", tau=10.0/self.downsample),
+                                          lab.mean_spikecount(roi=current, name="spikes")])
+    
+            # Calculate this pattern's similarity to imprinted route patterns
+            # (the fraction of its cells it shares with an imprinted pattern)
+            overlaps = [np.sum(current*self.route_patterns[:,:,j])/float(np.sum(current)) for j in range(self.num_imprinted)]
+            nr_active = np.sum(current) # nr of active cells in the pattern (for normalization)
+            all_imprinted = np.sum(self.route_patterns[:,:,0:self.num_imprinted],axis=2)
+            all_imprinted[all_imprinted>1] = 1
+            similarity = np.sum(current*all_imprinted)/float(nr_active)
             
-            # Check if both nodes participate in the same pattern
-            in_pattern=False 
-            for pat in range(num_imprinted):
-                if route_patterns[u[0],u[1],pat] and route_patterns[v[0],v[1],pat]:
-                    in_pattern = True
-                    break
+            activated_subnet = self.network.subgraph([node for node in zip(*np.where(current))])
+            edges = [edge for edge in activated_subnet.edges_iter(data=True) if edge[2]["strength"]>1]
 
-            # if so, make a strong link with some probability depending on distance
-            p_connect_pattern    = max(1.0/(conn_b*np.sqrt((u[0]-v[0])**2 + (u[1]-v[1])**2))-conn_c,0)
-            p_connect_background = max(1.0/(conn_b_bck*np.sqrt((u[0]-v[0])**2 + (u[1]-v[1])**2))-conn_c_bck,0)
-            if in_pattern and rng.rand()<p_connect_pattern:
-                network.add_edge(u,v,{"strength":15})
-            # fewer and weaker background connections are created where there was no common input.
-            elif rng.rand()<p_connect_background:
-                network.add_edge(u,v,{"strength":1})
+            ex.network_match = len(edges)/float(np.sum(current > 0))
+            ex.similarity = similarity
+            ex.similar_to = zip(overlaps,[self.route_patterns[:,:,j].copy() for j in range(self.num_imprinted)])
+        
+            self.experiments.append(ex)
+            self.similarities.append(similarity)
+            
+            
+    def run(self):
+        for s in range(self.num_samples):
+            print("Sample " + str(s))
+            rng = RandomState(s)
+            self.setup_network(rng)
+            self.setup_experiments(rng)
+            result = []
+            
+            # fetch synchrony measurements (this triggers the simulation to be run)
+            for i, experiment in enumerate(self.experiments):
+                    print("\nExperiment " + str(i))
+                    result.append([self.similarities[i], experiment.getresults('rsync')[0]])
+            self.results.append(result)
+            
+        return self.results
 
-    # create a setup (experiment object) for each pattern to be presented to the network
-    experiments_this_net = []
-    similarities_this_net = []
-    for i in range(num_patterns):
-        current = patterns[:,:,i]
-        ex = lab.experiment(network,[rng.randint(1,10000)],inputc=current, name="seed "+str(seednr)+" pattern "+str(i), downsample=downsample, verbose=True, con_upstr_exc=2,
-                                            measures=[lab.spikey_rsync(roi=current,name="rsync",tau=10.0/downsample),
-                                                      lab.mean_spikecount(roi=current,name="spikes"),
-                                                      ])
-        # calculate this pattern's similarity to imprinted patterns
-        # (the fraction of its cells it shares with an imprinted pattern)
-        # Change: 'patterns' has been changed to 'route_patterns' where appropriate ## tp275 ##
-        overlaps = [np.sum(current*route_patterns[:,:,j])/float(np.sum(current)) for j in range(num_imprinted)]
-        nr_active = np.sum(current) # nr of active cells in the pattern (for normalization)
-        all_imprinted = np.sum(route_patterns[:,:,0:num_imprinted],axis=2)
-        all_imprinted[all_imprinted>1] = 1
-        similarity = np.sum(current*all_imprinted)/float(nr_active)
-
-        activated_subnet = network.subgraph([node for node in zip(*np.where(current))])
-        edges = [edge for edge in activated_subnet.edges_iter(data=True) if edge[2]["strength"]>1]
-
-        ex.network_match = len(edges)/float(np.sum(current > 0))
-
-        # import ipdb; ipdb.set_trace()
-
-        ex.similarity = similarity
-        ex.similar_to = zip(overlaps,[route_patterns[:,:,j].copy() for j in range(num_imprinted)])
-        similarities_this_net.append(similarity)
-        # if i<num_imprinted:
-        #     ex.name+="_imprinted"
-        experiments_this_net.append(ex)
-
-
-    # sort all experiments that use this network by pattern similarity
-    sort = np.digitize(similarities_this_net,bins,right=True)
-    experiments_binned = [[] for _ in bins]
-    similarities_binned = [[] for _ in bins]
-    for i,ex in enumerate(experiments_this_net):
-        experiments_binned[sort[i]].append(ex)
-        similarities_binned[sort[i]].append(ex.similarity)
-
-    # check whether there are enough experiments in each pattern similarity bin
-    if np.min([len(s) for s in similarities_binned]) >= patterns_per_bin:
-        return np.array([column[0:patterns_per_bin] for column in experiments_binned]).flatten()
-    elif num_patterns<num_patterns_initial*100:
-        print "seednr "+str(seednr)+": "+str(num_patterns)+" sample patterns not enough, trying with more"
-        return setup(seed,seednr,num_patterns*2)
-    else:
-        raise Exception("couldn't find required number of samples in each bin after "+str(num_patterns)+" patterns")
-
-# repeatedly run the whole sampling procedure
-for i in np.arange(n_samples):
-    experiments.extend(setup(i,i,num_patterns_initial))
-
-
-# sort all experiments on all networks, based on pattern similarity
-similarities = [ex.similarity for ex in experiments]
-experiments_binned = [[] for _ in bins]
-sort = np.digitize(similarities,bins,right=True)
-similarities_binned = [[] for _ in bins]
-for i,ex in enumerate(experiments):
-    experiments_binned[sort[i]].append(ex)
-    similarities_binned[sort[i]].append(ex.similarity)
-
-experiments_binned.append([e for e in experiments_binned[-1] if e.network_match >= 2])
-bins = list(bins)+[1]
-
-
-def doboxplot(data,xticklabels, do_scatter=False):
-    grid(linestyle='-', which='major', axis='y',color='black',alpha=0.3)
-    boxplot(data,notch=True,boxprops={'color':'black'},flierprops={'color':'black'},
-                    medianprops={'color':'red'},whiskerprops={'color':'black','linestyle':'-'})
-    # background scatterplot:
-    if do_scatter:
-        for i in range(len(data)):
-            displacement = np.array([0.97+0.06*np.random.randn() for _ in range(len(data[i]))])
-            scatter(i+displacement,data[i],marker='o',s=30,alpha=0.15,c=(0,0.2,0.8),linewidth=0)
-    xlim((0,len(data)+1))
-    xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
-
-
-def plot_setups(experiments,save=True):
-    for i,ex in enumerate(experiments):
-        figure(figsize=(25,2))
-        plo.eplotsetup(ex,'rsync')
-        title("similarity "+str(ex.similarity))
-        if save:
-            savefig(ex.name+'.pdf', bbox_inches='tight')
-
-			
-# plot one example from each similarity category
-picture_seed = 0  # small seed for when running small # of repetitions ## tp275 ##
-plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
-# make a video of an example from the highest similarity bin
-#last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
-
-
-# fetch synchrony measurements from trials where there was at least 1 spike
-# (this triggers the simulation to be run)
-rsyncs = [[] for _ in bins]
-for i,column in enumerate(experiments_binned):
-    for j,ex in enumerate(column):
-        print "\n bin",i,"ex",j
-        spikecount = ex.getresults('spikes')
-        if np.mean(spikecount) >= 0.01:
-            rsyncs[i].append(ex.getresults('rsync'))
-
-text = ('similarity: ' + str(similarities_binned[0][0]) +
-          '\n\nrsync mean: ' + str(np.mean(rsyncs[0])) +
-          '\n\nall rsyncs: ')
-
-for x in rsyncs[0]:
-    temp = '\n' + str(x[0])
-    text += temp
-
-with open('latest_result.txt', 'w') as f:
-	f.write(text)
-
-print('\a')
+if __name__ == "__main__":
+    
+    test = IndividualSynchrony([7, 90], 1)
+    
+    results = test.run()
+    
+    text = ("similarity, rsync\n\n")
+    
+    for s in range(len(results)):
+        text += "Sample " + str(s)
+        for sim, rsync in results[s]:
+            temp = '\n' + str(sim) + ', ' + str(rsync)
+            text += temp
+        text += '\n\n'
+    
+    with open('latest_result.txt', 'w') as f:
+    	f.write(text)
