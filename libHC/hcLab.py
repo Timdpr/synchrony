@@ -290,7 +290,7 @@ class experiment:
         le = len(self.seeds)
         [meas.reset() for meas in self.measures.values()]
         for i, s in enumerate(self.seeds):
-            printprogress('running "' + self.name + '", repetition ', i, le)
+            printprogress('running "' + self.name + '", repetition', i, le)
             voltage, spikes = self.getraw(i)
             for meas in self.measures.values():
                 meas.apply(voltage, spikes, verbose=self.verbose)

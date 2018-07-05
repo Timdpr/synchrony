@@ -146,10 +146,10 @@ void simulate(int M,
 
     // say hello & show the current parametrisation & input pattern.
     if (verbose){
-        printf("starting simulation (Izhikevich neuron)\n");
-        printf("seed: %d\nM: %d\nN: %d\nlimit: %d\nKT: %d\nlaminex: %f\nlamini: %f\nizhi_a: %f\nizhi_b: %f\nizhi_reset_c: %f\nizhi_recovery_d: %f\ncon_upstr_exc: %f\ncon_upstr_inh: %f\ntaus: %f\nalp: %f\nbet: %f\ntauni: %f\nani: %f\nbni: %f\ntauna: %f\nana: %f\nbna: %f\nactivation_noise: %f\ndelta_t: %f\n",
+        printf("\nstarting simulation (Izhikevich neuron)\n");
+        printf("\nseed: %d\nM: %d, N: %d\nlimit: %d\nKT: %d\nlaminex: %f, lamini: %f\nizhi_a: %f, izhi_b: %f\nizhi_reset_c: %f, izhi_recovery_d: %f\ncon_upstr_exc: %f, con_upstr_inh: %f\ntaus: %f, alp: %f, bet: %f\ntauni: %f, ani: %f, bni: %f\ntauna: %f, ana: %f, bna: %f\nactivation_noise: %f\ndelta_t: %f\n",
                 seed, M, N, limit, KT, laminex, lamini, izhi_a, izhi_b, izhi_reset_c, izhi_recovery_d, con_upstr_exc, con_upstr_inh, taus, alp, bet, tauni, ani, bni, tauna, ana, bna, activation_noise, delta_t);
-
+/*
         int i1,j1;
         int print_exc, print_inh;
         for (j1 = 0; j1<M; j1++ ){
@@ -163,6 +163,7 @@ void simulate(int M,
             }
             printf("\n");
         }
+*/
     }
 
     assert(seed>0);
