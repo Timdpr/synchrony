@@ -13,16 +13,16 @@ import hcNetworks as net
 from numpy.random import RandomState
 import getPatterns
 
-
 class IndividualSynchrony:
     def __init__(self, network_dimensions, num_samples,
-                 pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3, conn_b=1, conn_c=0.15, downsample=100,
                  pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
-                 route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/'):
+                 route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/',
+                 pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3, conn_b=1, conn_c=0.15, downsample=100):
         """
         network_dimensions: [M, N], the network size
-        num_imprinted: nr of high prior patterns, i.e. number of route images
         num_samples: repetitions of the whole sampling procedure (networks & patterns)
+        pattern_dir: path to folder containing images to present to the network
+        route_pattern_dir: path to folder containing images to imprint/encode in the network
         
         pattern_b: pattern size: activation probability dropoff rate with distance from pattern center
         pattern_c: pattern size: activation probability cutoff with distance
@@ -54,11 +54,13 @@ class IndividualSynchrony:
     
     def setup_network(self, rng):
         """
+        Creates the network and imprints given (route) images, with distance-dependent
+        connection probability and stronger links between cells that participate in the route patterns
         """
         print("Creating network from " + str(self.num_imprinted) + " route images")
         self.network = None
-        # Generate the network using route images, with distance-dependent connection probability
-        # and stronger links between cells that participate in the route patterns
+        
+        # Generate the network using route images
         self.network = net.grid_empty(self.M, self.N)
         nodes = self.network.nodes()
         for i,u in enumerate(nodes):
@@ -79,6 +81,7 @@ class IndividualSynchrony:
                     self.network.add_edge(u,v,{"strength":1})
         print("Done")
                     
+        
     def setup_experiments(self, rng):
         """
         Creates a setup (experiment object) for each pattern to be presented to the network
@@ -127,6 +130,7 @@ class IndividualSynchrony:
             self.results.append(result)
             
         return self.results
+    
 
 if __name__ == "__main__":
     
@@ -134,14 +138,13 @@ if __name__ == "__main__":
     
     results = test.run()
     
+    # output results text file
     text = ("similarity, rsync\n\n")
-    
     for s in range(len(results)):
         text += "Sample " + str(s)
         for sim, rsync in results[s]:
             temp = '\n' + str(sim) + ', ' + str(rsync)
             text += temp
         text += '\n\n'
-    
     with open('latest_result.txt', 'w') as f:
     	f.write(text)
