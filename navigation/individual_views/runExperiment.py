@@ -25,8 +25,10 @@ def outputResultsTextFile(results):
 
 test = TestPatternsOnNetwork([7, 90], 1,
                              rotation=True, rot_step=30,
-                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
-                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/',
+							 pattern_dir='/synchrony/images/individual_view',
+							 route_pattern_dir='/synchrony/images/route_90x7/',
+#                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
+#                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/',
                              pattern_b=0, pattern_c=0.2,
                              conn_b_bck=1, conn_c_bck=0.3,
                              conn_b=1, conn_c=0.15, 
