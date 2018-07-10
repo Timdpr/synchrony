@@ -54,14 +54,25 @@ def plotRIDF(patterns):
     plt.plot(np.linspace(-180, fix, num=len(ridfs)), ridfs)
     
     plt.show()
-#    plt.savefig('RIDF.svg')
+    plt.savefig('RIDF.svg')
     
 def plotRotationSynchrony(results):
     """
     """
+    # Create list containing lists of rsyncs for each similarity
     rsyncs = [[] for l in range(len(results[0]))]
-    for i, res in enumerate(results[0]):
-            rsyncs[i] = res[1]
+    for i in range(len(results)):
+        for j, res in enumerate(results[i]):
+            rsyncs[j].append(res[1])        
+    rsyncs = np.roll(rsyncs, len(rsyncs)/2, axis=0)
+    
+    # Create lists of mean and standard error rsyncs
+    means = [np.mean(rs) for rs in rsyncs]
+    stds_above = [np.std(rs) for rs in rsyncs]
+    stds_below = [np.std(rs) for rs in rsyncs]
+    for i in range(len(means)):
+        stds_above[i] = means[i] + stds_below[i]
+        stds_below[i] = means[i] - stds_below[i]
     
     # Plotting...
     plt.clf()
@@ -74,10 +85,16 @@ def plotRotationSynchrony(results):
     plt.xlabel('angle ($\degree$)')
     plt.ylabel(r'$R_{syn}$')
     plt.xticks([-180, -120, -60, 0, 60, 120, 180])
-    fix = 180-(360/len(rsyncs)) if len(rsyncs) % 2 == 0 else 180  # hacky fix to centralise plot
-    plt.plot(np.linspace(-180, fix, num=len(rsyncs)), [np.mean(rs) for rs in rsyncs])
-    plt.fill_between(np.linspace(-180, fix, num=len(rsyncs)),
-                     [np.min(rs) for rs in rsyncs], [np.max(rs) for rs in rsyncs], alpha=0.2)
     
+    fix = 180-(360/len(rsyncs)) if len(rsyncs) % 2 == 0 else 180  # hacky fix to centralise plot
+    x_axis = np.linspace(-180, fix, num=len(rsyncs))
+    
+    plt.plot(x_axis, means)
+    plt.fill_between(x_axis, stds_above, stds_below, alpha=0.2)
+    plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4')
+    plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4')
     plt.show()
-#    plt.savefig('rotation_rsync.svg')
+    plt.savefig('rotation_rsync.svg')
+    plt.gca().invert_yaxis()
+    plt.show()
+    plt.savefig('rotation_rsync_inverted.svg')
