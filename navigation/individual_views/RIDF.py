@@ -58,7 +58,7 @@ def plotRIDF(patterns):
     plt.show()
     plt.savefig('RIDF.svg')
     
-def plotRotationSynchrony(results):
+def plotRotationSynchrony(results, experiment_num):
     """
     """
     # Create list containing lists of rsyncs for each similarity
@@ -96,7 +96,7 @@ def plotRotationSynchrony(results):
     plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4')
     plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4')
     plt.show()
-    plt.savefig('rotation_rsync.svg')
+    plt.savefig('rsync_exp' + str(experiment_num) + '.svg')
     plt.gca().invert_yaxis()
     plt.show()
-    plt.savefig('rotation_rsync_inverted.svg')
+    plt.savefig('rsync_invert_exp' + str(experiment_num) + '.svg')
