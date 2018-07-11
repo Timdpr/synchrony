@@ -124,11 +124,12 @@ class TestPatternsOnNetwork:
             self.setup_network(rng)
             self.setup_experiments(rng)
             result = []
+            self.results = [[] for i in range(len(self.experiments))]
             
             # fetch synchrony measurements (this triggers the simulation to be run)
             for i, experiment in enumerate(self.experiments):
                     print("\nExperiment " + str(i))
                     result.append([self.similarities[i], experiment.getresults('rsync')[0]])
-            self.results.append(result)
+            self.results[i].append(result)
             
         return self.results
