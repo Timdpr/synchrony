@@ -136,8 +136,8 @@ class TestPatternsOnNetwork:
                 for re, rotation_experiment in enumerate(image_experiments):
                     
                     print("\n### Experiment %i/%i for image %i/%i in sample %i/%i ###\n(%i/%i)"
-                          %(re, len(image_experiments), ie, len(self.experiments), s, self.num_samples,
-                          re+ie+s, len(image_experiments)+len(self.experiments)+self.num_samples))
+                          %(re+1, len(image_experiments), ie+1, len(self.experiments), s+1, self.num_samples,
+                          re+ie+s+3, len(image_experiments)+len(self.experiments)+self.num_samples))
                     
                     image_result.append([self.similarities[ie][re], rotation_experiment.getresults('rsync')[0]])
                 sample_result.append(image_result)
