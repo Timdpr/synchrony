@@ -49,7 +49,7 @@ class TestPatternsOnNetwork:
         self.num_imprinted = len(self.route_patterns[0][0])
 
         self.rotations_per_image = self.N / rot_step if rotation else 1
-        self.num_unrotated  # no. images in folder
+        self.num_unrotated = None  # no. images in folder
         self.network = None
         self.experiments = []
         self.similarities = []
