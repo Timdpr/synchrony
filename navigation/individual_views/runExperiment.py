@@ -36,11 +36,11 @@ test = TestPatternsOnNetwork([7, 90], 3, rotation=True, rot_step=45,
 results = test.run()
 patterns = test.patterns
 
-for i in range(len(test.num_unrotated)):  # for i = image number
+for i in range(test.num_unrotated):  # for i = image number
     # Plot RIDF graph (of each rotated image), for each image
     RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i)
 
-for i in range(len(test.num_unrotated)):  # for i = image number
+for i in range(test.num_unrotated):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
     RIDF.plotRotationSynchrony(results_by_image, i)
