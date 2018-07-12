@@ -32,7 +32,7 @@ def getImageList(patterns):
         imageList.append(img)
     return imageList
 
-def plotRIDF(patterns):
+def plotRIDF(patterns, image_num):
     """
     """
     imageList = getImageList(patterns)
@@ -55,8 +55,7 @@ def plotRIDF(patterns):
     fix = 180-(360/len(ridfs)) if len(ridfs) % 2 == 0 else 180  # hacky fix to centralise plot
     plt.plot(np.linspace(-180, fix, num=len(ridfs)), ridfs)
     
-    plt.show()
-    plt.savefig('RIDF.svg')
+    plt.savefig('RIDF_%i.svg'%(image_num))
     
 def plotRotationSynchrony(results, experiment_num):
     """
@@ -98,5 +97,5 @@ def plotRotationSynchrony(results, experiment_num):
     plt.show()
     plt.savefig('rsync_exp' + str(experiment_num) + '.svg')
     plt.gca().invert_yaxis()
-    plt.show()
+    
     plt.savefig('rsync_invert_exp' + str(experiment_num) + '.svg')

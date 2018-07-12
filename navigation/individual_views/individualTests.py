@@ -48,6 +48,8 @@ class TestPatternsOnNetwork:
         self.route_patterns = getPatterns.getPatternsInDirectory(route_pattern_dir, self.M, self.N)
         self.num_imprinted = len(self.route_patterns[0][0])
 
+        self.rotations_per_image = self.N / rot_step if rotation else 1
+        self.num_unrotated  # no. images in folder
         self.network = None
         self.experiments = []
         self.similarities = []
@@ -88,9 +90,12 @@ class TestPatternsOnNetwork:
         """
         Creates a setup (experiment object) for each pattern to be presented to the network
         """
-        self.experiments = []
-        self.similarities = []
-        for i in range(len(self.patterns[0][0])): # for each image in pattern folder
+        # no. images in folder = no. patterns / no. rotations
+        self.num_unrotated = int(len(self.patterns[0][0]) / self.rotations_per_image)
+        # populate experiments list with same no. lists as number of images in folder
+        self.experiments = [[] for i in range(self.num_unrotated)]
+        self.similarities = [[] for i in range(self.num_unrotated)]
+        for i in range(len(self.patterns[0][0])): # for each pattern
             current = self.patterns[:,:,i]
             ex = lab.experiment(self.network, [rng.randint(1,10000)],
                                 inputc=current, name="pattern "+str(i),
@@ -113,22 +118,28 @@ class TestPatternsOnNetwork:
             ex.similarity = similarity
             ex.similar_to = zip(overlaps,[self.route_patterns[:,:,j].copy() for j in range(self.num_imprinted)])
         
-            self.experiments.append(ex)
-            self.similarities.append(similarity)
+            self.experiments[int(np.floor(i/self.rotations_per_image))].append(ex)
+            self.similarities[int(np.floor(i/self.rotations_per_image))].append(similarity)
             
             
     def run(self):
         for s in range(self.num_samples):
-            print("Sample " + str(s))
             rng = RandomState(s)
             self.setup_network(rng)
             self.setup_experiments(rng)
-            result = []
+            
             
             # fetch synchrony measurements (this triggers the simulation to be run)
-            for i, experiment in enumerate(self.experiments):
-                print("\nExperiment " + str(i))
-                result.append([self.similarities[i], experiment.getresults('rsync')[0]])
-            self.results.append(result)
+            sample_result = []
+            for ie, image_experiments in enumerate(self.experiments):
+                image_result = []
+                for re, rotation_experiment in enumerate(image_experiments):
+                    
+                    print("\nExperiment %i/%i for image %i/%i in sample %i/%i"
+                          %(re, len(image_experiments), ie, len(self.experiments), s, self.num_samples))
+                    
+                    image_result.append([self.similarities[ie][re], rotation_experiment.getresults('rsync')[0]])
+                sample_result.append(image_result)
+            self.results.append(sample_result)
             
         return self.results
