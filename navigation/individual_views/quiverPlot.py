@@ -67,8 +67,6 @@ def get_rsync_and_rotation(results):
     
     return max_rsync, rotation_at_max
     
-    
-
 
 degrees = [180 for i in range(493)]
 rsyncs = np.random.rand(17, 29)
