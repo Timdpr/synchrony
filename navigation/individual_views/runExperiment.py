@@ -7,20 +7,9 @@ import RIDF
 import numpy as np
 from individualTests import TestPatternsOnNetwork
 
-def outputResultsTextFile(results):
-    text = ("similarity, rsync\n\n")
-    for s in range(len(results)):
-        text += "Sample " + str(s)
-        for sim, rsync in results[s]:
-            temp = '\n' + str(sim) + ', ' + str(rsync)
-            text += temp
-        text += '\n\n'
-    text += 'Mean rsync for each similarity:\n'
-    for i in range(6):
-        text += str(np.mean([results[0][i][1], results[1][i][1], results[2][i][1]]))
-        text += '\n'
-    with open('latest_result.txt', 'w') as f:
-    	f.write(text)
+def outputResultsTextFile(results, result_num):
+    with open('results%i.txt'%(result_num), 'w') as f:
+    	f.write(str(results))
         
 
 test = TestPatternsOnNetwork([7, 90], 4, rotation=True, rot_step=10,
@@ -45,10 +34,4 @@ for i in range(test.num_unrotated):  # for i = image number
     results_by_image = [sample[i] for sample in results]
     RIDF.plotRotationSynchrony(results_by_image, i)
 
-
-#outputResultsTextFile(results)
-
-
-
-
-
+outputResultsTextFile(results, 1)

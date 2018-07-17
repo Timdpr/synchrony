@@ -95,7 +95,7 @@ def plotRotationSynchrony(results, experiment_num):
     plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4')
     plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4')
     plt.show()
-    plt.savefig('rsync_exp' + str(experiment_num) + '.svg')
+    plt.savefig('rsync_exp%i.svg'%(experiment_num))
     plt.gca().invert_yaxis()
     
-    plt.savefig('rsync_invert_exp' + str(experiment_num) + '.svg')
+    plt.savefig('rsync_invert_exp%i.svg'%(experiment_num))
