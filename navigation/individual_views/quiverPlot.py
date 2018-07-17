@@ -79,4 +79,4 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
                     slice(348, 356), slice(358, 362), slice(365, 374), slice(382, 391), slice(399, 408),
                     slice(417, 425), slice(434, 442), slice(451, 458), slice(469, 473)]
 
-quiverPlot(x, y, degrees, rsyncs, missing_img_nums)
+quiver_plot(degrees, rsyncs, missing_img_nums)
