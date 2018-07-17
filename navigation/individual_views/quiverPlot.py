@@ -7,14 +7,17 @@ Function for creating the quiver plot, including quivers, heatmap and route arro
 import numpy as np
 import matplotlib.pyplot as plt
 
-def quiverPlot(x, y, degrees, rsyncs, missing_image_numbers):
+def quiver_plot(degrees, rsyncs, missing_image_numbers):
     """
-    x: List of (columnwise) image x-coordinates (as [0, 0, 0, 100, 100, 100...etc])
-    y: List of (rowwise) image y-coordinates (as [0, 100, 200, 0, 100, 200...etc])
     degrees: List of INVERTED degrees away from the x-axis to face
     rsyncs: List of rsync values corresponding to each 'winning' degree value. Annoyingly, this must be in the form of a 2d array
     missingImageNumbers: List of points (numbered as eg. x indices, 1-484) where the image was missing from the dataset
     """
+    # x: List of (columnwise) image x-coordinates (as [0, 0, 0, 100, 100, 100...etc])
+    # y: List of (rowwise) image y-coordinates (as [0, 100, 200, 0, 100, 200...etc])
+    x = [j for j in range(0, 2900, 100) for i in range(17)]
+    y = [np.linspace(0, 1600, 17) for i in range(29)]
+    y = [i for a in y for i in a]
     
     for i in sorted(missing_image_numbers, reverse=True):
         del x[i]  # delete all x/y elements where images were missing, so as
@@ -47,12 +50,27 @@ def quiverPlot(x, y, degrees, rsyncs, missing_image_numbers):
 #    plt.show()
     plt.savefig('Unnamed Quiver Plot.svg', dpi=400)
     
-    
-x = [j for j in range(0, 2900, 100) for i in range(17)]
-y = [np.linspace(0, 1600, 17) for i in range(29)]
-y = [i for a in y for i in a]
 
-degrees = [25 for i in range(493)]
+def get_rsync_and_rotation(results, experiment_num):
+    """
+    """
+    # Create list containing lists of rsyncs for each similarity
+    rsyncs = [[] for l in range(len(results[0]))]
+    for i in range(len(results)):
+        for j, res in enumerate(results[i]):
+            rsyncs[j].append(res[1])
+    
+    # Create lists of mean rsyncs
+    means = [np.mean(rs) for rs in rsyncs]
+    max_rsync = max(means)
+    rotation_at_max = means.index(max_rsync) * (360/len(means))
+    
+    return max_rsync, rotation_at_max
+    
+    
+
+
+degrees = [180 for i in range(493)]
 rsyncs = np.random.rand(17, 29)
 missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), slice(78, 93),
                     slice(95, 110), slice(112, 125), slice(130, 140),slice(147, 153), slice(165, 170),
