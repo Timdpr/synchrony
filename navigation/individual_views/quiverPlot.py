@@ -51,7 +51,7 @@ def quiver_plot(degrees, rsyncs, missing_image_numbers):
     plt.savefig('Unnamed Quiver Plot.svg', dpi=400)
     
 
-def get_rsync_and_rotation(results, experiment_num):
+def get_rsync_and_rotation(results):
     """
     """
     # Create list containing lists of rsyncs for each similarity
@@ -78,5 +78,3 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
                     slice(289, 296), slice(306, 313), slice(323, 330), slice(334, 339), slice(340, 347),
                     slice(348, 356), slice(358, 362), slice(365, 374), slice(382, 391), slice(399, 408),
                     slice(417, 425), slice(434, 442), slice(451, 458), slice(469, 473)]
-
-quiver_plot(degrees, rsyncs, missing_img_nums)
