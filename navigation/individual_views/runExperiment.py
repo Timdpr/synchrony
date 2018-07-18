@@ -21,10 +21,8 @@ test = TestPatternsOnNetwork([7, 90], 2, rotation=True, rot_step=10,
                              route_pattern_dir='/home/ec2-user/environment/synchrony/images/route_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
 #                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/',
-                             pattern_b=0, pattern_c=0.2,
-                             conn_b_bck=1, conn_c_bck=0.3,
-                             conn_b=1, conn_c=0.15, 
-                             downsample=100)
+                             pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
+                             conn_b=1, conn_c=0.15, downsample=100)
 
 results = test.run()
 print("--- %s seconds ---" % (time.time() - start_time))
