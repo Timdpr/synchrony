@@ -43,13 +43,13 @@ for i in range(test.num_unrotated):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
     RIDF.plotRotationSynchrony(results_by_image, i)
-    rsync, degree = get_rsync_and_rotation(results_by_image)
+#    rsync, degree = get_rsync_and_rotation(results_by_image)
 #    degrees.append(degree)
-    degrees_test.append(degree)
-    rsync_test.append(rsync)
+#    degrees_test.append(degree)
+#    rsync_test.append(rsync)
     
-rsyncs[6][7] = rsync_test[0]
-degrees[123] = -(degrees_test[0])
+#rsyncs[6][7] = rsync_test[0]
+#degrees[123] = -(degrees_test[0])
 
 missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), slice(78, 93),
                     slice(95, 110), slice(112, 125), slice(130, 140),slice(147, 153), slice(165, 170),
@@ -57,6 +57,6 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
                     slice(289, 296), slice(306, 313), slice(323, 330), slice(334, 339), slice(340, 347),
                     slice(348, 356), slice(358, 362), slice(365, 374), slice(382, 391), slice(399, 408),
                     slice(417, 425), slice(434, 442), slice(451, 458), slice(469, 473)]
-quiver_plot(degrees, rsyncs, missing_img_nums)
+#quiver_plot(degrees, rsyncs, missing_img_nums)
     
 outputResultsTextFile(results, 1)

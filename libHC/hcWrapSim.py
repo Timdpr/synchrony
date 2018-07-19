@@ -126,7 +126,7 @@ def run_sim(graph,
             bna=8.0,
             activation_noise=0.4,
             verbose=0,
-            T=500,
+            T=600,
             delta_t=0.005,
             downsample=10,
             transient=300):
