@@ -177,7 +177,7 @@ def plot_setups(experiments,save=True):
 picture_seed = 79
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
-last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
+#last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
 
 
 figure(figsize=(3,3))
