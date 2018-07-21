@@ -8,6 +8,8 @@ This script takes a long time to run.
 
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg') 
 from matplotlib.pyplot import *
 import os,sys
 hc_path = "../../libHC"
