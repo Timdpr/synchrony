@@ -159,10 +159,10 @@ def animate_graph(recording,network,is_measured,inputc,start,skip,stop=None,grid
         if i*skip < recording.shape[2]:
             nx.draw_networkx_edges(network,positions,edge_color='gray')
             nx.draw_networkx_nodes(network.subgraph(roinodes),positions,with_labels=False,
-                                    node_size=140,node_color=[measured_color]*len(roinodes),linewidths=0)
+                                    node_size=70,node_color=[measured_color]*len(roinodes),linewidths=0)
 
             nx.draw_networkx_nodes(network,positions,with_labels=False,
-                                    node_size=100,node_color=nodecolors(start+i*skip),linewidths=0)
+                                    node_size=50,node_color=nodecolors(start+i*skip),linewidths=0)
 
             nx.draw_networkx_nodes(network.subgraph(inputnodes),positions,with_labels=False,
                                     node_size=7,node_color=[(0.8,0,0)]*len(inputnodes),linewidths=0)
@@ -230,7 +230,7 @@ def plotgraph(g):
     """Plot a grid graph, using (i,j) node labels as positions"""
     plt.figure(figsize=fig_size)
     positions = dict(zip(g.nodes(),g.nodes()))
-    nx.draw_networkx(g,positions,with_labels=False,node_size=50)
+    nx.draw_networkx(g,positions,with_labels=False,node_size=10)
 
 
 # plotting of measurement results:
@@ -448,7 +448,7 @@ def compare(experiments,measurename=None,grid_as="image",plot_as="scatter,boxplo
     return fig
 
 
-def plotsetup(network,inputstrength,is_measured,axes=None,grid_as="image",subgraph=False, nodesize=0.25, edgecolor_offset=0):
+def plotsetup(network,inputstrength,is_measured,axes=None,grid_as="image",subgraph=False, nodesize=0.2, edgecolor_offset=0):
     """
     Draws the network graph, with color markers for the input-receiving and the
     measured population.
@@ -551,7 +551,7 @@ def plotsetup(network,inputstrength,is_measured,axes=None,grid_as="image",subgra
             #..or assume grid_as IS a networkx layout function and use that.
             positions = grid_as(network)
             is_inh = False
-        nx.draw_networkx_edges(network,positions,edgelist=edges_plot, edge_color=edgecolors_plot,ax=axes, width=0.75)
+        nx.draw_networkx_edges(network,positions,edgelist=edges_plot, edge_color=edgecolors_plot,ax=axes, width=0.2)
         # draw cyan measurement markers:
         measured_color = (0.2,0.6,0.9) #(0.2,0.8,0.4)q
         roinodes = [nd for nd in nodelist if is_measured[nd]]

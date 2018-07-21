@@ -198,10 +198,10 @@ for i,column in enumerate(experiments_binned):
 print "nr of samples per bin:", [len(s) for s in rsyncs]
 
 # plot them
-# figure(figsize=(5,4))
-# doboxplot(spikecounts_,[0]+bins.tolist())
-# ylabel("spikecount")
-# savefig('spikecount.pdf', bbox_inches='tight')
+figure(figsize=(5,4))
+doboxplot(spikecounts_,[0]+bins.tolist())
+ylabel("spikecount")
+savefig('spikecount.pdf', bbox_inches='tight')
 
 figure(figsize=(3,3))
 doboxplot(rsyncs,[0]+bins)

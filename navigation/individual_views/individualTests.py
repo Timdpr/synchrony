@@ -6,7 +6,7 @@ Outputs a synchrony measure for a single view. Partially based on cknd's origina
 
 import numpy as np
 import os, sys
-hc_path = "../../libHC"
+hc_path = "../../navLibHC"
 sys.path.append(os.path.realpath(hc_path))
 import hcLab as lab
 import hcNetworks as net

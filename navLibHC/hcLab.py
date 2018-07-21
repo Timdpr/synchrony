@@ -275,7 +275,7 @@ class experiment:
         self.verbose = simulation_kwargs.get('verbose', False)
 
         simulation_kwargs['delta_t'] = simulation_kwargs.get('delta_t', 0.005)
-        simulation_kwargs['T'] = simulation_kwargs.get('T', 1000)
+        simulation_kwargs['T'] = simulation_kwargs.get('T', 600)
         simulation_kwargs['downsample'] = simulation_kwargs.get('downsample', 10)
 
         self.simulation_kwargs = simulation_kwargs
@@ -290,7 +290,7 @@ class experiment:
         le = len(self.seeds)
         [meas.reset() for meas in self.measures.values()]
         for i, s in enumerate(self.seeds):
-            printprogress('running "' + self.name + '", repetition ', i, le)
+            printprogress('running "' + self.name + '", repetition', i, le)
             voltage, spikes = self.getraw(i)
             for meas in self.measures.values():
                 meas.apply(voltage, spikes, verbose=self.verbose)

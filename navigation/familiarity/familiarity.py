@@ -11,7 +11,7 @@ Script initially created by cknd, modified for route navigation etc. by tp275
 import numpy as np
 from matplotlib.pyplot import *
 import os,sys
-hc_path = "../../libHC"
+hc_path = "../../navLibHC"
 sys.path.append(os.path.realpath(hc_path))
 import networkx as nx
 import hcLab as lab
