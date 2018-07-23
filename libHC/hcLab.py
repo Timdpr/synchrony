@@ -275,7 +275,7 @@ class experiment:
         self.verbose = simulation_kwargs.get('verbose', False)
 
         simulation_kwargs['delta_t'] = simulation_kwargs.get('delta_t', 0.005)
-        simulation_kwargs['T'] = simulation_kwargs.get('T', 1000)
+        simulation_kwargs['T'] = simulation_kwargs.get('T', 500)
         simulation_kwargs['downsample'] = simulation_kwargs.get('downsample', 10)
 
         self.simulation_kwargs = simulation_kwargs

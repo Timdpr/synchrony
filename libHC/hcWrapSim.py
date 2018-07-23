@@ -126,10 +126,10 @@ def run_sim(graph,
             bna=8.0,
             activation_noise=0.4,
             verbose=0,
-            T=1000,
+            T=500,
             delta_t=0.005,
             downsample=10,
-            transient=500):
+            transient=250):
     """
     Return a simulation of the given network structure und the given input stimulus,
     extitatory and inhibitory input rate, neuron parameters etc.
