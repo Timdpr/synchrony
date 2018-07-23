@@ -5,8 +5,6 @@ Then, tests synchrony for input patterns that more or less resemble these imprin
 This script takes a long time to run.
 
 """
-
-
 import numpy as np
 import matplotlib
 matplotlib.use('Agg') 
@@ -115,7 +113,6 @@ def setup(seed,seednr,num_patterns):
         #     ex.name+="_imprinted"
         experiments_this_net.append(ex)
 
-
     # sort all experiments that use this network by pattern similarity
     sort = np.digitize(similarities_this_net,bins,right=True)
     experiments_binned = [[] for _ in bins]
@@ -137,8 +134,6 @@ def setup(seed,seednr,num_patterns):
 for i in np.arange(n_samples):
     experiments.extend(setup(i,i,num_patterns_initial))
 
-
-
 # sort all experiments on all networks, based on pattern similarity
 similarities = [ex.similarity for ex in experiments]
 experiments_binned = [[] for _ in bins]
@@ -152,9 +147,11 @@ experiments_binned.append([e for e in experiments_binned[-1] if e.network_match 
 bins = list(bins)+[1]
 
 
-def doboxplot(data,xticklabels, do_scatter=False):
+def doboxplot(data,xticklabels, do_scatter=False, xtop=False):
+    if xtop:
+        tick_params(top=True, labeltop=True, labelbottom=False, right=True, direction='in')
     grid(linestyle='-', which='major', axis='y',color='black',alpha=0.3)
-    boxplot(data,notch=True,boxprops={'color':'black'},flierprops={'color':'black'},
+    boxplot(data,notch=True,sym='+',boxprops={'color':'black'},flierprops={'color':'black'},
                     medianprops={'color':'red'},whiskerprops={'color':'black','linestyle':'-'})
     # background scatterplot:
     if do_scatter:
@@ -163,6 +160,14 @@ def doboxplot(data,xticklabels, do_scatter=False):
             scatter(i+displacement,data[i],marker='o',s=30,alpha=0.15,c=(0,0.2,0.8),linewidth=0)
     xlim((0,len(data)+1))
     xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
+    
+    
+def do_scatter_plot(experiments):
+    tick_params(top=True, right=True, direction='in')
+    grid(linestyle='-', which='major', axis='y',color='black',alpha=0.3)
+    x = [ex.similarity for ex in experiments]
+    y = [ex.getresults('rsync')[0] for ex in experiments]
+    scatter(x, y, marker='o',s=30,alpha=0.2,c=(0,0.2,0.8),linewidth=0)
 
 
 def plot_setups(experiments,save=True):
@@ -171,7 +176,8 @@ def plot_setups(experiments,save=True):
         plo.eplotsetup(ex,'rsync')
         title("similarity "+str(ex.similarity))
         if save:
-            savefig(ex.name+'.pdf', bbox_inches='tight')
+            savefig(ex.name+'.svg', bbox_inches='tight')
+
 
 # plot one example from each similarity category
 picture_seed = 79
@@ -179,11 +185,10 @@ plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 #last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
 
-
 figure(figsize=(3,3))
 plo.plotsetup(experiments_binned[0][79].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
-savefig('network.pdf', bbox_inches='tight')
+savefig('network.svg', bbox_inches='tight')
 
 # fetch synchrony measurements from trials where there was at least 1 spike
 # (this triggers the simulation to be run)
@@ -194,43 +199,68 @@ for i,column in enumerate(experiments_binned):
         print "\n bin",i,"ex",j
         spikecount = ex.getresults('spikes')
         if np.mean(spikecount) >= 0.01:
-            rsyncs[i].append(ex.getresults('rsync'))
+            [i].append(ex.getresults('rsync'))
             # spikecounts_[i].append(spikecount)
+
 
 print "nr of samples per bin:", [len(s) for s in rsyncs]
 
 # plot them
-figure(figsize=(5,4))
-doboxplot(spikecounts_,[0]+bins.tolist())
-ylabel("spikecount")
-savefig('spikecount.pdf', bbox_inches='tight')
+# figure(figsize=(5,4))
+# doboxplot(spikecounts_,[0]+bins.tolist())
+# ylabel("spikecount")
+# savefig('spikecount.pdf', bbox_inches='tight')
 
-figure(figsize=(3,3))
-doboxplot(rsyncs,[0]+bins)
-ylabel("Rsync")
+
+# Box plot
+figure(figsize=(5,5))
+ax = gca()
+ax.xaxis.set_label_position('top')
+doboxplot(rsyncs,[0]+bins, xtop=True)
+ylabel(r'$R_{syn}$')
 ylim(0,1)
-xlabel("Similarity")
-savefig('rsync.pdf', bbox_inches='tight')
+xlabel("Similarity to imprinted patterns", labelpad=8)
+savefig('rsync_box.svg', bbox_inches='tight')
 
 
+# Box plot with (binned) scatter plot in background
+figure(figsize=(5,5))
+ax = gca()
+ax.xaxis.set_label_position('top')
+doboxplot(rsyncs,[0]+bins,do_scatter=True,xtop=True)
+ylabel(r'$R_{syn}$')
+ylim(0,1)
+xlabel("Similarity to imprinted patterns", labelpad=8)
+savefig('rsync_box_scatter.svg', bbox_inches='tight')
 
-figure(figsize=(3,3))
+
+# Scatter plot
+figure(figsize=(5,5))
+do_scatter_plot(experiments)
+ylabel(r'$R_{syn}$')
+ylim(0,1)
+xlim(-0.05, 1.05)
+xlabel("Similarity to imprinted patterns")
+xticks(np.linspace(0, 1, 11))
+savefig('rsync_scatter.svg', bbox_inches='tight')
+
+
+# Connectivity plot
+figure(figsize=(5,5))
 title('connectivity of inout-receiving cells')
 doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bins)
 ylabel("# connections / # input-receiving")
 ylim(ymin=-0.1)
 xlabel("Similarity index")
-savefig('network_sampling_variability.pdf', bbox_inches='tight')
+savefig('network_sampling_variability.svg', bbox_inches='tight')
 
 
-
-
-figure()
+# Low synchrony, high similarity plot
+figure(figsize=(3,3))
 lowest_sync_highest_similarity = experiments_binned[-2][np.argmin([exp.getresults('rsync') for exp in experiments_binned[-2]])]
 plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
-title('example of a situation with low sync despite high similarity index')
-savefig('setup__low_sync_high_similarity.pdf', bbox_inches='tight')
-
+title('example of a situation with low sync\ndespite high similarity index')
+savefig('low_sync_high_similarity.svg', bbox_inches='tight')
 
 
 print('\a')
