@@ -48,7 +48,7 @@ def quiver_plot(degrees, rsyncs, missing_image_numbers):
     plt.quiver(x, y, u, v, angles=degrees, zorder=3)
     
 #    plt.show()
-    plt.savefig('Unnamed Quiver Plot.svg', dpi=400)
+    plt.savefig('Unnamed Quiver Plot.pdf', dpi=400)
     
 
 def get_rsync_and_rotation(results):

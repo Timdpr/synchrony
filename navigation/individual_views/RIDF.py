@@ -55,7 +55,7 @@ def plotRIDF(patterns, image_num):
     fix = 180-(360/len(ridfs)) if len(ridfs) % 2 == 0 else 180  # hacky fix to centralise plot
     plt.plot(np.linspace(-180, fix, num=len(ridfs)), ridfs)
     
-    plt.savefig('RIDF_%i.svg'%(image_num))
+    plt.savefig('RIDF_%i.pdf'%(image_num))
     
 def plotRotationSynchrony(results, experiment_num):
     """
@@ -95,7 +95,7 @@ def plotRotationSynchrony(results, experiment_num):
     plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4')
     plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4')
     plt.show()
-    plt.savefig('rsync_exp%i.svg'%(experiment_num))
+    plt.savefig('rsync_exp%i.pdf'%(experiment_num))
     plt.gca().invert_yaxis()
     
-    plt.savefig('rsync_invert_exp%i.svg'%(experiment_num))
+    plt.savefig('rsync_invert_exp%i.pdf'%(experiment_num))

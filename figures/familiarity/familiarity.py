@@ -176,7 +176,7 @@ def plot_setups(experiments,save=True):
         plo.eplotsetup(ex,'rsync')
         title("similarity "+str(ex.similarity))
         if save:
-            savefig(ex.name+'.svg', bbox_inches='tight')
+            savefig(ex.name+'.pdf', bbox_inches='tight')
 
 
 # plot one example from each similarity category
@@ -188,7 +188,7 @@ plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 figure(figsize=(3,3))
 plo.plotsetup(experiments_binned[0][79].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
-savefig('network.svg', bbox_inches='tight')
+savefig('network.pdf', bbox_inches='tight')
 
 # fetch synchrony measurements from trials where there was at least 1 spike
 # (this triggers the simulation to be run)
@@ -220,7 +220,7 @@ doboxplot(rsyncs,[0]+bins, xtop=True)
 ylabel(r'$R_{syn}$')
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
-savefig('rsync_box.svg', bbox_inches='tight')
+savefig('rsync_box.pdf', bbox_inches='tight')
 
 
 # Box plot with (binned) scatter plot in background
@@ -231,7 +231,7 @@ doboxplot(rsyncs,[0]+bins,do_scatter=True,xtop=True)
 ylabel(r'$R_{syn}$')
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
-savefig('rsync_box_scatter.svg', bbox_inches='tight')
+savefig('rsync_box_scatter.pdf', bbox_inches='tight')
 
 
 # Scatter plot
@@ -242,7 +242,7 @@ ylim(0,1)
 xlim(-0.05, 1.05)
 xlabel("Similarity to imprinted patterns")
 xticks(np.linspace(0, 1, 11))
-savefig('rsync_scatter.svg', bbox_inches='tight')
+savefig('rsync_scatter.pdf', bbox_inches='tight')
 
 
 # Connectivity plot
@@ -252,7 +252,7 @@ doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bi
 ylabel("# connections / # input-receiving")
 ylim(ymin=-0.1)
 xlabel("Similarity index")
-savefig('network_sampling_variability.svg', bbox_inches='tight')
+savefig('network_sampling_variability.pdf', bbox_inches='tight')
 
 
 # Low synchrony, high similarity plot
@@ -260,6 +260,6 @@ figure(figsize=(3,3))
 lowest_sync_highest_similarity = experiments_binned[-2][np.argmin([exp.getresults('rsync') for exp in experiments_binned[-2]])]
 plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
 title('example of a situation with low sync\ndespite high similarity index')
-savefig('low_sync_high_similarity.svg', bbox_inches='tight')
+savefig('low_sync_high_similarity.pdf', bbox_inches='tight')
 
 print('\a')

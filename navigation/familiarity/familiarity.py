@@ -26,7 +26,7 @@ downsample=100
 
 M=7 # network size
 N=90 # '' ''
-num_patterns_initial = 24660/32 # initial size of pattern pool from which to sample - increases itself as needed:
+num_patterns_initial = 24660/8 # initial size of pattern pool from which to sample - increases itself as needed:
 patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns, i.e. number of route images
 pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
@@ -36,8 +36,8 @@ conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated 
 conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
-bins = np.arange(0.5,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
+bins = [0.5, 0.6, 0.7, 0.8, 0.9, 1.]#np.arange(0.5,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
+n_samples = 50 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -77,6 +77,7 @@ def setup(seed,seednr,num_patterns):
     experiments_this_net = []
     similarities_this_net = []
     for i in range(num_patterns):
+        i = np.random.randint(0, num_patterns)  # Make pattern selection random for more variation (hopefully)
         current = patterns[:,:,i]
         ex = lab.experiment(network,[rng.randint(1,10000)],inputc=current, name="seed "+str(seednr)+" pattern "+str(i), downsample=downsample, verbose=True, con_upstr_exc=2,
                                             measures=[lab.spikey_rsync(roi=current,name="rsync",tau=10.0/downsample),
@@ -168,11 +169,11 @@ def plot_setups(experiments,save=True):
         plo.eplotsetup(ex,'rsync')
         title("similarity "+str(ex.similarity))
         if save:
-            savefig(ex.name+'.svg', bbox_inches='tight')
+            savefig(ex.name+'.pdf', bbox_inches='tight')
 
 			
 # plot one example from each similarity category
-picture_seed = 3  # remember small seed for when running small # of repetitions ## tp275 ##
+picture_seed = 0  # remember small seed for when running small # of repetitions ## tp275 ##
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 #last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
@@ -180,7 +181,7 @@ plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 figure(figsize=(25,2))
 plo.plotsetup(experiments_binned[0][picture_seed].network,np.zeros((M,N)),np.zeros((M,N)),gca(),grid_as='graph')
 title('network')
-savefig('network.svg', bbox_inches='tight')
+savefig('network.pdf', bbox_inches='tight')
 
 # fetch synchrony measurements from trials where there was at least 1 spike
 # (this triggers the simulation to be run)
@@ -191,7 +192,7 @@ for i,column in enumerate(experiments_binned):
         print "\n bin",i,"ex",j
         spikecount = ex.getresults('spikes')
         if np.mean(spikecount) >= 0.01:
-            rsyncs[i].append(ex.getresults('rsync'))
+            rsyncs[i].append(ex.getresults('rsync')[0])
             # spikecounts_[i].append(spikecount)
 
 print "nr of samples per bin:", [len(s) for s in rsyncs]
@@ -212,7 +213,7 @@ doboxplot(rsyncs,[0]+bins, xtop=True)
 ylabel(r'$R_{syn}$')
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
-savefig('rsync_box.svg', bbox_inches='tight')
+savefig('rsync_box.pdf', bbox_inches='tight')
 
 
 # Box plot with (binned) scatter plot in background
@@ -223,7 +224,7 @@ doboxplot(rsyncs,[0]+bins,do_scatter=True,xtop=True)
 ylabel(r'$R_{syn}$')
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
-savefig('rsync_box_scatter.svg', bbox_inches='tight')
+savefig('rsync_box_scatter.pdf', bbox_inches='tight')
 
 
 # Scatter plot
@@ -234,7 +235,7 @@ ylim(0,1)
 xlim(-0.05, 1.05)
 xlabel("Similarity to imprinted patterns")
 xticks(np.linspace(0, 1, 11))
-savefig('rsync_scatter.svg', bbox_inches='tight')
+savefig('rsync_scatter.pdf', bbox_inches='tight')
 
 
 # Connectivity plot
@@ -244,7 +245,7 @@ doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bi
 ylabel("# connections / # input-receiving")
 ylim(ymin=-0.1)
 xlabel("Similarity index")
-savefig('network_sampling_variability.svg', bbox_inches='tight')
+savefig('network_sampling_variability.pdf', bbox_inches='tight')
 
 
 # Low synchrony, high similarity plot
@@ -252,7 +253,7 @@ figure(figsize=(25,2))
 lowest_sync_highest_similarity = experiments_binned[-2][np.argmin([exp.getresults('rsync') for exp in experiments_binned[-2]])]
 plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
 title('example of a situation with low sync\ndespite high similarity index')
-savefig('low_sync_high_similarity.svg', bbox_inches='tight')
+savefig('low_sync_high_similarity.pdf', bbox_inches='tight')
 
 x = [ex.similarity for ex in experiments]
 y = [ex.getresults('rsync')[0] for ex in experiments]
