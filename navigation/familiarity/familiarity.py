@@ -26,7 +26,7 @@ downsample=100
 
 M=7 # network size
 N=90 # '' ''
-num_patterns_initial= 24660 # initial size of pattern pool from which to sample - increases itself as needed:
+num_patterns_initial = 24660/32 # initial size of pattern pool from which to sample - increases itself as needed:
 patterns_per_bin = 1       # pattern pool is increased until this nr of patterns is found in each bin.
 num_imprinted=10 # nr of high prior patterns, i.e. number of route images
 pattern_b=1 # pattern size: activation probability dropoff rate with distance from pattern center
@@ -36,8 +36,8 @@ conn_c_bck=0.3 # network connectivity cutoff with distance, for non-coactivated 
 conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
-bins = np.arange(0.2,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 100 # repetitions of the whole sampling procedure (networks & patterns)
+bins = np.arange(0.5,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
+n_samples = 5 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -172,7 +172,7 @@ def plot_setups(experiments,save=True):
 
 			
 # plot one example from each similarity category
-picture_seed = 79  # remember small seed for when running small # of repetitions ## tp275 ##
+picture_seed = 3  # remember small seed for when running small # of repetitions ## tp275 ##
 plot_setups([column[picture_seed] for column in experiments_binned[:-1]])
 # make a video of an example from the highest similarity bin
 #last = experiments_binned[-2][picture_seed].saveanimtr(0,10,2,grid_as='graph')
@@ -254,4 +254,10 @@ plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
 title('example of a situation with low sync\ndespite high similarity index')
 savefig('low_sync_high_similarity.svg', bbox_inches='tight')
 
+x = [ex.similarity for ex in experiments]
+y = [ex.getresults('rsync')[0] for ex in experiments]
+with open('results_1.txt', 'w') as f:
+    f.write('similarities_binned:\n' + str(similarities_binned) + '\n\nrsyncs (binned):\n' + str(rsyncs) + '\n\n')
+    f.write('similarities:\n' + str(x) + '\n\nrsyncs:\n' + str(y))
+    
 print('\a')
