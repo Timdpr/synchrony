@@ -11,7 +11,7 @@ from skimage import filters
 from skimage import io
 from skimage import color
 
-path = ('C:/Users/s/Documents/Masters/Project/images/binarised_rotated/')
+path = ('C:/Users/s/Documents/Masters/Project/images/imdb_boxes_temp/')
 dirs = os.listdir(path)
 
 def threshold():

@@ -7,7 +7,7 @@ This script takes a long time to run.
 """
 import numpy as np
 import matplotlib
-matplotlib.use('Agg') 
+matplotlib.use('Agg')
 from matplotlib.pyplot import *
 import os,sys
 hc_path = "../../libHC"
@@ -199,11 +199,11 @@ for i,column in enumerate(experiments_binned):
         print "\n bin",i,"ex",j
         spikecount = ex.getresults('spikes')
         if np.mean(spikecount) >= 0.01:
-            [i].append(ex.getresults('rsync'))
+            rsyncs[i].append(ex.getresults('rsync'))
             # spikecounts_[i].append(spikecount)
 
-
 print "nr of samples per bin:", [len(s) for s in rsyncs]
+
 
 # plot them
 # figure(figsize=(5,4))
@@ -261,6 +261,5 @@ lowest_sync_highest_similarity = experiments_binned[-2][np.argmin([exp.getresult
 plo.eplotsetup(lowest_sync_highest_similarity, measurename='rsync')
 title('example of a situation with low sync\ndespite high similarity index')
 savefig('low_sync_high_similarity.svg', bbox_inches='tight')
-
 
 print('\a')
