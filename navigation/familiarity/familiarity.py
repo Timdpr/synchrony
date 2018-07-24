@@ -37,7 +37,7 @@ conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
 bins = [0.5, 0.6, 0.7, 0.8, 0.9, 1.]#np.arange(0.5,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 50 # repetitions of the whole sampling procedure (networks & patterns)
+n_samples = 20 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -141,7 +141,10 @@ bins = list(bins)+[1]
 
 
 def doboxplot(data,xticklabels, do_scatter=False, xtop=False):
+    figure(figsize=(5,5))
     if xtop:
+        ax = gca()
+        ax.xaxis.set_label_position('top')
         tick_params(top=True, labeltop=True, labelbottom=False, right=True, direction='in')
     grid(linestyle='-', which='major', axis='y',color='black',alpha=0.3)
     boxplot(data,notch=True,sym='+',boxprops={'color':'black'},flierprops={'color':'black'},
@@ -152,15 +155,26 @@ def doboxplot(data,xticklabels, do_scatter=False, xtop=False):
             displacement = np.array([0.97+0.06*np.random.randn() for _ in range(len(data[i]))])
             scatter(i+displacement,data[i],marker='o',s=30,alpha=0.15,c=(0,0.2,0.8),linewidth=0)
     xlim((0,len(data)+1))
+    ylim(0,1)
+    xlabel("Similarity to imprinted patterns", labelpad=8)
+    ylabel(r'$R_{syn}$')
     xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
     
     
 def do_scatter_plot(experiments):
-    tick_params(top=True, right=True, direction='in')
+    figure(figsize=(5,5))
+    ax = gca()
+    ax.xaxis.set_label_position('top')
+    tick_params(top=True, labeltop=True, labelbottom=False, right=True, direction='in')
     grid(linestyle='-', which='major', axis='y',color='black',alpha=0.3)
     x = [ex.similarity for ex in experiments]
     y = [ex.getresults('rsync')[0] for ex in experiments]
     scatter(x, y, marker='o',s=30,alpha=0.2,c=(0,0.2,0.8),linewidth=0)
+    xlim(-0.05, 1.05)
+    ylim(0,1)
+    xlabel("Similarity to imprinted patterns", labelpad=8)
+    ylabel(r'$R_{syn}$')
+    xticks(np.linspace(0, 1, 11))
 
 
 def plot_setups(experiments,save=True):
@@ -206,42 +220,33 @@ print "nr of samples per bin:", [len(s) for s in rsyncs]
 
 
 # Box plot
-figure(figsize=(5,5))
-ax = gca()
-ax.xaxis.set_label_position('top')
 doboxplot(rsyncs,[0]+bins, xtop=True)
-ylabel(r'$R_{syn}$')
+xlim((0,len(data)+1))
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
+ylabel(r'$R_{syn}$')
+xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
 savefig('rsync_box.pdf', bbox_inches='tight')
 
 
 # Box plot with (binned) scatter plot in background
-figure(figsize=(5,5))
-ax = gca()
-ax.xaxis.set_label_position('top')
 doboxplot(rsyncs,[0]+bins,do_scatter=True,xtop=True)
-ylabel(r'$R_{syn}$')
+xlim((0,len(data)+1))
 ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
+ylabel(r'$R_{syn}$')
+xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
 savefig('rsync_box_scatter.pdf', bbox_inches='tight')
 
 
 # Scatter plot
-figure(figsize=(5,5))
 do_scatter_plot(experiments)
-ylabel(r'$R_{syn}$')
-ylim(0,1)
-xlim(-0.05, 1.05)
-xlabel("Similarity to imprinted patterns")
-xticks(np.linspace(0, 1, 11))
 savefig('rsync_scatter.pdf', bbox_inches='tight')
 
 
 # Connectivity plot
-figure(figsize=(5,5))
-title('connectivity of inout-receiving cells')
 doboxplot([[e.network_match for e in bin] for bin in experiments_binned], [0]+bins)
+title('connectivity of inout-receiving cells')
 ylabel("# connections / # input-receiving")
 ylim(ymin=-0.1)
 xlabel("Similarity index")
