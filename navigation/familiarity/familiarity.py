@@ -37,7 +37,7 @@ conn_b=1 # dropoff rate for co-activated cells
 conn_c=0.15 # relaxed cutoff for co-activated cells. Try 0.1: Stronger sync difference between high and low similarity, but connectivtiy structure seems very dense. Or try 0.2: Rather sparse-looking connectivity and more washed out sync result.
 
 bins = [0.5, 0.6, 0.7, 0.8, 0.9, 1.]#np.arange(0.5,1.1,0.1) #np.arange(0.2,1.1,0.2) # edges of the desired similarity bins
-n_samples = 20 # repetitions of the whole sampling procedure (networks & patterns)
+n_samples = 15 # repetitions of the whole sampling procedure (networks & patterns)
 
 experiments = []
 def setup(seed,seednr,num_patterns):
@@ -221,21 +221,15 @@ print "nr of samples per bin:", [len(s) for s in rsyncs]
 
 # Box plot
 doboxplot(rsyncs,[0]+bins, xtop=True)
-xlim((0,len(data)+1))
-ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
 ylabel(r'$R_{syn}$')
-xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
 savefig('rsync_box.pdf', bbox_inches='tight')
 
 
 # Box plot with (binned) scatter plot in background
 doboxplot(rsyncs,[0]+bins,do_scatter=True,xtop=True)
-xlim((0,len(data)+1))
-ylim(0,1)
 xlabel("Similarity to imprinted patterns", labelpad=8)
 ylabel(r'$R_{syn}$')
-xticks(np.arange(0.5,len(data)+1.5),xticklabels, rotation=0)
 savefig('rsync_box_scatter.pdf', bbox_inches='tight')
 
 
@@ -262,7 +256,7 @@ savefig('low_sync_high_similarity.pdf', bbox_inches='tight')
 
 x = [ex.similarity for ex in experiments]
 y = [ex.getresults('rsync')[0] for ex in experiments]
-with open('results_1.txt', 'w') as f:
+with open('results_4.txt', 'w') as f:
     f.write('similarities_binned:\n' + str(similarities_binned) + '\n\nrsyncs (binned):\n' + str(rsyncs) + '\n\n')
     f.write('similarities:\n' + str(x) + '\n\nrsyncs:\n' + str(y))
     
