@@ -8,6 +8,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import os, sys
+hc_path = "../../navLibHC"
+sys.path.append(os.path.realpath(hc_path))
+import getPatterns
 
 def getRootMeanSquareDiff(im1, im2):
     """
@@ -32,12 +36,16 @@ def getImageList(patterns):
         imageList.append(img)
     return imageList
 
-def plotRIDF(patterns, image_num):
+def plotRIDF(patterns, image_num, use_single_comparison=False, single_image_path='/home/ec2-user/environment/synchrony/images/RIDF_comparison_image'):
     """
     """
     imageList = getImageList(patterns)
-
-    ridfs = [getRootMeanSquareDiff(imageList[0], im) for im in imageList]
+    
+    if use_single_comparison:
+        original_pattern = getPatterns.getPatternsInDirectory(single_image_path, 7, 90)
+        ridfs = [getRootMeanSquareDiff(original_pattern, im) for im in imageList]
+    else:
+        ridfs = [getRootMeanSquareDiff(imageList[0], im) for im in imageList]
     ridfs = np.roll(ridfs, len(ridfs)/2)  # shift list so 0 rotation is in the centre
     ridfs /= max(ridfs)  # normalise
 
