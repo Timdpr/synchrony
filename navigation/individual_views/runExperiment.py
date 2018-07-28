@@ -16,7 +16,7 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 2, rotation=True, rot_step=10,
+test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=3,
                              pattern_dir='/home/ec2-user/environment/synchrony/images/individual_view/',
                              route_pattern_dir='/home/ec2-user/environment/synchrony/images/route_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
@@ -30,12 +30,12 @@ patterns = test.patterns
 
 for i in range(test.num_unrotated):  # for i = image number
     # Plot RIDF graph (of each rotated image), for each image
-    RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i)
+    RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i, use_single_comparison=True)
 
-rsyncs = np.zeros((17, 29))
-rsync_test = []
-degrees = [180 for i in range(493)]
-degrees_test = []
+#rsyncs = np.zeros((17, 29))
+#rsync_test = []
+#degrees = [180 for i in range(493)]
+#degrees_test = []
 
 for i in range(test.num_unrotated):  # for i = image number
     # Create list of results of each sample for the particular image
