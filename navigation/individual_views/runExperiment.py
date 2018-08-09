@@ -24,7 +24,7 @@ test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=3,
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
                              conn_b=1, conn_c=0.15, downsample=100)
 
-results = test.run()
+#results = test.run()
 print("--- %s seconds ---" % (time.time() - start_time))
 patterns = test.patterns
 
@@ -37,6 +37,7 @@ for i in range(test.num_unrotated):  # for i = image number
 #degrees = [180 for i in range(493)]
 #degrees_test = []
 
+"""
 for i in range(test.num_unrotated):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
@@ -45,6 +46,7 @@ for i in range(test.num_unrotated):  # for i = image number
 #    degrees.append(degree)
 #    degrees_test.append(degree)
 #    rsync_test.append(rsync)
+
     
 #rsyncs[6][7] = rsync_test[0]
 #degrees[123] = -(degrees_test[0])
@@ -58,3 +60,4 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
 #quiver_plot(degrees, rsyncs, missing_img_nums)
     
 outputResultsTextFile(results, 1)
+"""

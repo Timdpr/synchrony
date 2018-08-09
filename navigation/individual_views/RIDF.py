@@ -45,8 +45,9 @@ def plotRIDF(patterns, image_num, use_single_comparison=False, single_image_path
         ridfs = [getRootMeanSquareDiff(original_pattern[0], im) for im in imageList]
     else:
         ridfs = [getRootMeanSquareDiff(imageList[0], im) for im in imageList]
-        
+    
     ridfs = np.roll(ridfs, len(ridfs)/2)  # shift list so 0 rotation is in the centre
+    print(ridfs)
     ridfs /= max(ridfs)  # normalise
     # Plotting...
     plt.clf()
