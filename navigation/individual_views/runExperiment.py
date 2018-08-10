@@ -16,7 +16,7 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=3,
+test = TestPatternsOnNetwork([7, 90], 8, rotation=True, rot_step=2,
                              pattern_dir='/home/ec2-user/environment/synchrony/images/individual_view/',
                              route_pattern_dir='/home/ec2-user/environment/synchrony/images/route_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
@@ -24,20 +24,26 @@ test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=3,
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
                              conn_b=1, conn_c=0.15, downsample=100)
 
-#results = test.run()
+results = test.run()
 print("--- %s seconds ---" % (time.time() - start_time))
 patterns = test.patterns
 
-for i in range(test.num_unrotated):  # for i = image number
+"""
+i = 0
+original_image = RIDF.getImageList(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image])[0]
+
+for i in range(7):  # for i = image number
     # Plot RIDF graph (of each rotated image), for each image
-    RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i, use_single_comparison=True)
+    RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i,
+                  use_single_comparison=True, original_image=original_image)
+"""
 
 #rsyncs = np.zeros((17, 29))
 #rsync_test = []
 #degrees = [180 for i in range(493)]
 #degrees_test = []
 
-"""
+
 for i in range(test.num_unrotated):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
@@ -60,4 +66,3 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
 #quiver_plot(degrees, rsyncs, missing_img_nums)
     
 outputResultsTextFile(results, 1)
-"""

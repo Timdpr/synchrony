@@ -36,19 +36,20 @@ def getImageList(patterns):
         imageList.append(img)
     return imageList
 
-def plotRIDF(patterns, image_num, use_single_comparison=False, single_image_path='/home/ec2-user/environment/synchrony/images/RIDF_comparison_image'):
+def plotRIDF(patterns, image_num, use_single_comparison=False, original_image=None):
     """
     """
     imageList = getImageList(patterns)
     if use_single_comparison:
-        original_pattern = getImageList(getPatterns.getPatternsInDirectory(single_image_path, 7, 90))
-        ridfs = [getRootMeanSquareDiff(original_pattern[0], im) for im in imageList]
+        ridfs = [getRootMeanSquareDiff(original_image, im) for im in imageList]
     else:
         ridfs = [getRootMeanSquareDiff(imageList[0], im) for im in imageList]
     
     ridfs = np.roll(ridfs, len(ridfs)/2)  # shift list so 0 rotation is in the centre
-    print(ridfs)
     ridfs /= max(ridfs)  # normalise
+    print(str(image_num) + ':')
+    print(str(ridfs))
+    print()
     # Plotting...
     plt.clf()
     plt.style.use('seaborn-whitegrid')
@@ -61,6 +62,7 @@ def plotRIDF(patterns, image_num, use_single_comparison=False, single_image_path
     plt.ylabel('RIDF (normalised)')
     plt.xticks([-180, -120, -60, 0, 60, 120, 180])
     fix = 180-(360/len(ridfs)) if len(ridfs) % 2 == 0 else 180  # hacky fix to centralise plot
+    print('\n\n\n' + str(np.linspace(-180, fix, num=len(ridfs))) + '\n\n\n')
     plt.plot(np.linspace(-180, fix, num=len(ridfs)), ridfs)
     
     plt.savefig('RIDF_%i.pdf'%(image_num))
