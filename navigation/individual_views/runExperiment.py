@@ -16,7 +16,7 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 8, rotation=True, rot_step=2,
+test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=2,
                              pattern_dir='/home/ec2-user/environment/synchrony/images/individual_view/',
                              route_pattern_dir='/home/ec2-user/environment/synchrony/images/route_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
