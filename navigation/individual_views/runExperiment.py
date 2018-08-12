@@ -17,8 +17,8 @@ def outputResultsTextFile(results, result_num):
         
 
 test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=2,
-                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_rotation_rsync/',
-                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/',
+                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_rotation_plants/',
+                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_plants_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/exp_rotation_rsync/',
 #                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/routes/route_boxes_90x7/',
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
@@ -32,7 +32,7 @@ patterns = test.patterns
 i = 0
 original_image = RIDF.getImageList(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image])[0]
 
-for i in range(7):  # for i = image number
+for i in range(6):  # for i = image number
     # Plot RIDF graph (of each rotated image), for each image
     RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i,
                   use_single_comparison=True, original_image=original_image)
@@ -65,4 +65,4 @@ missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), 
                     slice(417, 425), slice(434, 442), slice(451, 458), slice(469, 473)]
 #quiver_plot(degrees, rsyncs, missing_img_nums)
     
-outputResultsTextFile(results, 3)
+outputResultsTextFile(results, 1)
