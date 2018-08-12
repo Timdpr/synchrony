@@ -23,8 +23,9 @@ def threshold():
             val = filters.threshold_otsu(im)
             im = im < val
 
-            # Save, overwriting existing file
+            # Save, overwriting original file
             f, e = os.path.splitext(path+item)
             plt.imsave(f, color.rgb2gray(im), cmap='gray')
 			
 threshold()
+print('Done')

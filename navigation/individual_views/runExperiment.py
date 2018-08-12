@@ -17,10 +17,10 @@ def outputResultsTextFile(results, result_num):
         
 
 test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=2,
-                             pattern_dir='/home/ec2-user/environment/synchrony/images/individual_view/',
-                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/route_90x7/',
-#                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/individual_view/',
-#                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/route_90x7/',
+                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_rotation_rsync/',
+                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/',
+#                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/exp_rotation_rsync/',
+#                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/routes/route_boxes_90x7/',
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
                              conn_b=1, conn_c=0.15, downsample=100)
 

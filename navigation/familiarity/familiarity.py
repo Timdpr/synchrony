@@ -44,7 +44,7 @@ def setup(seed,seednr,num_patterns):
     print "sampling network",seednr,"with a pool of",num_patterns,"patterns"
     # Instead of generating patterns, get patterns from 'all_views' folder ## tp275 ##
     patterns = getPatterns.getPatternsInDirectory(
-                '/home/ec2-user/environment/synchrony/images/all_views_90x7/', M, N, rotation=True, rot_step=1)
+                '/home/ec2-user/environment/synchrony/images/datasets/boxes_90x7_002/', M, N, rotation=True, rot_step=1)
     rng = RandomState(seed)
 
     # generate the network:
@@ -53,7 +53,7 @@ def setup(seed,seednr,num_patterns):
     network = net.grid_empty(M,N)
     nodes = network.nodes()
     route_patterns = getPatterns.getPatternsInDirectory(
-                '/home/ec2-user/environment/synchrony/images/route_90x7/', M, N)
+                '/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/', M, N)
     
     for i,u in enumerate(nodes):
         for v in nodes[i+1:]:
