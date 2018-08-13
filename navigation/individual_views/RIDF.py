@@ -88,7 +88,7 @@ def plotRotationSynchrony(results, experiment_num):
     # Plotting...
     plt.clf()
     plt.style.use('seaborn-whitegrid')
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5.5,3.66))
     ax.spines['right'].set_visible(False)  # remove borders from right...
     ax.spines['top'].set_visible(False)  # ...and top sides
     plt.xlim(-180, 180)
@@ -97,13 +97,14 @@ def plotRotationSynchrony(results, experiment_num):
     plt.ylabel(r'$R_{syn}$')
     plt.xticks([-180, -120, -60, 0, 60, 120, 180])
     
-    fix = 180-(360/len(rsyncs)) if len(rsyncs) % 2 == 0 else 180  # hacky fix to centralise plot
-    x_axis = np.linspace(-180, fix, num=len(rsyncs))
+#    fix = 180-(360/len(rsyncs)) if len(rsyncs) % 2 == 0 else 180  # hacky fix to centralise plot
+#    x_axis = np.linspace(-180, fix, num=len(rsyncs))
+    x_axis = np.linspace(-176, 176, 45) # use with rot_step of 2
     
     plt.plot(x_axis, means)
     plt.fill_between(x_axis, stds_above, stds_below, alpha=0.2)
-    plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4')
-    plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4')
+    plt.plot(x_axis, stds_above, alpha=0.3, color='#1f77b4', linewidth=1)
+    plt.plot(x_axis, stds_below, alpha=0.3, color='#1f77b4', linewidth=1)
     plt.show()
     plt.savefig('rsync_exp%i.pdf'%(experiment_num))
     plt.gca().invert_yaxis()
