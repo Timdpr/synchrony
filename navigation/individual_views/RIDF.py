@@ -53,11 +53,11 @@ def plotRIDF(patterns, image_num, use_single_comparison=False, original_image=No
     # Plotting...
     plt.clf()
     plt.style.use('seaborn-whitegrid')
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5.5,3.66))
     ax.spines['right'].set_visible(False)  # remove borders from right...
     ax.spines['top'].set_visible(False)  # ...and top sides
     plt.xlim(-180, 180)
-    plt.ylim(0, 1)
+    plt.ylim(0, 1.005)
     plt.xlabel('angle ($\degree$)')
     plt.ylabel('RIDF (normalised)')
     plt.xticks([-180, -120, -60, 0, 60, 120, 180])

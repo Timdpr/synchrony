@@ -170,11 +170,13 @@ def do_scatter_plot(experiments):
     x = [ex.similarity for ex in experiments]
     y = [ex.getresults('rsync')[0] for ex in experiments]
     scatter(x, y, marker='o',s=30,alpha=0.2,c=(0,0.2,0.8),linewidth=0)
-    xlim(-0.05, 1.05)
+#    xlim(-0.05, 1.05)
+    xlim(0.85, 1.05)
     ylim(0,1)
     xlabel("Similarity to imprinted patterns", labelpad=8)
     ylabel(r'$R_{syn}$')
-    xticks(np.linspace(0, 1, 11))
+#    xticks(np.linspace(0, 1, 11))
+    xticks([0.9, 0.92, 0.94, 0.96, 0.98, 1])
 
 
 def plot_setups(experiments,save=True):
