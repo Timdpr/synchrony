@@ -16,9 +16,9 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=2,
-                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_rotation_plants/',
-                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_plants_90x7/',
+test = TestPatternsOnNetwork([7, 90], 3, rotation=True, rot_step=5,
+                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_parameter_tuning/',
+                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/exp_rotation_rsync/',
 #                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/routes/route_boxes_90x7/',
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
@@ -28,7 +28,7 @@ results = test.run()
 print("--- %s seconds ---" % (time.time() - start_time))
 patterns = test.patterns
 
-
+"""
 i = 0
 original_image = RIDF.getImageList(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image])[0]
 
@@ -36,15 +36,15 @@ for i in range(2):  # for i = image number
     # Plot RIDF graph (of each rotated image), for each image
     RIDF.plotRIDF(patterns[:,:,test.rotations_per_image*i:(test.rotations_per_image*i)+test.rotations_per_image], i,
                   use_single_comparison=True, original_image=original_image)
-
+"""
 
 #rsyncs = np.zeros((17, 29))
 #rsync_test = []
 #degrees = [180 for i in range(493)]
 #degrees_test = []
 
-"""
-for i in range(2):  # for i = image number
+
+for i in range(1):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
     RIDF.plotRotationSynchrony(results_by_image, i)
@@ -52,7 +52,7 @@ for i in range(2):  # for i = image number
 #    degrees.append(degree)
 #    degrees_test.append(degree)
 #    rsync_test.append(rsync)
-"""
+
 
     
 #rsyncs[6][7] = rsync_test[0]
