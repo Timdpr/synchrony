@@ -100,6 +100,7 @@ def plotRotationSynchrony(results, experiment_num):
 #    fix = 180-(360/len(rsyncs)) if len(rsyncs) % 2 == 0 else 180  # hacky fix to centralise plot
 #    x_axis = np.linspace(-180, fix, num=len(rsyncs))
     x_axis = np.linspace(-176, 176, 45) # use with rot_step of 2
+#    x_axis = np.linspace(-180, 160, 18) # use with rot_step of 5
     
     plt.plot(x_axis, means)
     plt.fill_between(x_axis, stds_above, stds_below, alpha=0.2)

@@ -16,7 +16,7 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 3, rotation=True, rot_step=5,
+test = TestPatternsOnNetwork([7, 90], 5, rotation=True, rot_step=2,
                              pattern_dir='/home/ec2-user/environment/synchrony/images/exp_parameter_tuning/',
                              route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/exp_rotation_rsync/',
@@ -44,7 +44,7 @@ for i in range(2):  # for i = image number
 #degrees_test = []
 
 
-for i in range(1):  # for i = image number
+for i in range(2):  # for i = image number
     # Create list of results of each sample for the particular image
     results_by_image = [sample[i] for sample in results]
     RIDF.plotRotationSynchrony(results_by_image, i)
