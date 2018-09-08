@@ -53,11 +53,11 @@ for i in range(2):  # for i = image number
 outputResultsTextFile(results, 0)
 
 index_rsyn = []
-for im in results:
+for i in range(len(results[0])/17):
+    im = results[0][17*i:(17*i)+17]
     temp = []
     for rot in range(len(im)):
         temp.append(im[rot][0][1])
-        
     index_rsyn.append([np.argmax(temp), np.max(temp)])
     
 print(index_rsyn)
