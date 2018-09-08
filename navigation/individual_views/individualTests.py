@@ -44,7 +44,7 @@ class TestPatternsOnNetwork:
         self.conn_b = conn_b
         self.conn_c = conn_c
         self.downsample = downsample
-        self.patterns = getPatterns.getPatternsInDirectory(pattern_dir, self.M, self.N, rotation=rotation, rot_step=rot_step)
+        self.patterns = getPatterns.getPatternsInDirectoryForQuiver(pattern_dir, self.M, self.N)
         self.route_patterns = getPatterns.getPatternsInDirectory(route_pattern_dir, self.M, self.N)
         self.num_imprinted = len(self.route_patterns[0][0])
 

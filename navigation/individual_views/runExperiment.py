@@ -16,9 +16,9 @@ def outputResultsTextFile(results, result_num):
     	f.write(str(results))
         
 
-test = TestPatternsOnNetwork([7, 90], 4, rotation=False, rot_step=2,
-                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_distance/plants/0/',
-                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_plants_90x7/',
+test = TestPatternsOnNetwork([7, 90], 1, rotation=False, rot_step=2,
+                             pattern_dir='/home/ec2-user/environment/synchrony/images/exp_quiver/',
+                             route_pattern_dir='/home/ec2-user/environment/synchrony/images/routes/route_boxes_90x7/',
 #                             pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/exp_rotation_rsync/',
 #                             route_pattern_dir='/mnt/hgfs/Masters/Project/synchrony/images/routes/route_boxes_90x7/',
                              pattern_b=0, pattern_c=0.2, conn_b_bck=1, conn_c_bck=0.3,
@@ -38,10 +38,6 @@ for i in range(2):  # for i = image number
                   use_single_comparison=True, original_image=original_image)
 """
 
-#rsyncs = np.zeros((17, 29))
-#rsync_test = []
-#degrees = [180 for i in range(493)]
-#degrees_test = []
 
 """
 for i in range(2):  # for i = image number
@@ -53,17 +49,15 @@ for i in range(2):  # for i = image number
 #    degrees_test.append(degree)
 #    rsync_test.append(rsync)
 """
-
-    
-#rsyncs[6][7] = rsync_test[0]
-#degrees[123] = -(degrees_test[0])
-
-missing_img_nums = [slice(37, 42), slice(46, 50), slice(52, 59), slice(61, 76), slice(78, 93),
-                    slice(95, 110), slice(112, 125), slice(130, 140),slice(147, 153), slice(165, 170),
-                    slice(182, 185), slice(222, 226), slice(238, 244), slice(255, 261), slice(272, 279),
-                    slice(289, 296), slice(306, 313), slice(323, 330), slice(334, 339), slice(340, 347),
-                    slice(348, 356), slice(358, 362), slice(365, 374), slice(382, 391), slice(399, 408),
-                    slice(417, 425), slice(434, 442), slice(451, 458), slice(469, 473)]
-#quiver_plot(degrees, rsyncs, missing_img_nums)
     
 outputResultsTextFile(results, 0)
+
+index_rsyn = []
+for im in results:
+    temp = []
+    for rot in range(len(im)):
+        temp.append(im[rot][0][1])
+        
+    index_rsyn.append([np.argmax(temp), np.max(temp)])
+    
+print(index_rsyn)

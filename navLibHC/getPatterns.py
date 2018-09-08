@@ -37,3 +37,29 @@ def getPatternsInDirectory(path, M, N, rotation=False, rot_step=1):
                     patterns[:,:,i] = im
                 
     return patterns
+    
+def getPatternsInDirectoryForQuiver(path, M, N):
+    """
+    """
+    dirs = os.listdir(path)
+    
+    patterns = patterns = np.zeros(( M, N, len(dirs)*(17) ))
+
+    
+    rot_i = 0  # for indexing 3rd dim. when rotating
+    for i, item in enumerate(dirs):  # for each image
+            # Open image and convert to binary values
+            if os.path.isfile(path+item):
+                im = imread(path+item, flatten=True, mode='1')
+                im[im < 1] = 1
+                im[im > 1] = 0
+                
+                # optionally rotate image, then add to patterns array
+                
+                im = np.roll(im, 16, 1)  # 'roll' the image array (left) by given step
+                for r in range(17):  # for no. of rotated images
+                    patterns[:,:,rot_i] = im  # add to patterns
+                    im = np.roll(im, -2, 1)  # 'roll' the image array (left) by given step
+                    rot_i += 1
+                
+    return patterns
